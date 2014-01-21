@@ -22,20 +22,22 @@ public class Runner {
     }
 
     public static void main(String[] args) {
-        new Runner(new SimpleTerrain01());
-//        new Runner(new TestSketch());
+//        new Runner(new SimpleTerrain01());
+        new Runner(new TestSketch());
     }
 
     private class SketchFrame extends JFrame {
         SketchFrame(final Sketch s) {
             super("passage");
+            setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
             getContentPane().setPreferredSize(new Dimension(s.getTargetWidth(), s.getTargetHeight()));
             getContentPane().setSize(s.getTargetWidth(), s.getTargetHeight());
             getContentPane().add(s, BorderLayout.CENTER);
             pack();
             setVisible(true);
             s.init();
-            //setLocation(100, 100);
+            setLocation(100, 100);
+            setResizable(false);
         }
     }
 }
