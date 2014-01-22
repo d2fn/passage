@@ -1,5 +1,6 @@
 package org.measures.passage;
 
+import com.google.common.base.Joiner;
 import processing.core.PApplet;
 
 import org.measures.passage.geometry.SphericalPoint;
@@ -18,16 +19,18 @@ public class Sketch extends PApplet {
 
     protected final long startedAt = System.currentTimeMillis()/1000L;
 
-    protected final String passageHome;
-    protected final String passageArtifacts;
+    protected final String homeDir;
+    protected final String baseDataDir;
+
+    protected static final Joiner pathJoiner = Joiner.on(File.separatorChar);
 
     public Sketch() {
-        passageHome = getParameter("PASSAGE_HOME");
-        passageArtifacts = getParameter("PASSAGE_ARTIFACTS");
-        // make dirs to progress dir
-        if(passageArtifacts != null) {
-            new File(getArtifactDir()).mkdirs();
-        }
+        homeDir = getParameter("PASSAGE_HOME");
+        baseDataDir = getParameter("PASSAGE_DATA") == null ? homeDir : getParameter("PASSAGE_DATA");
+        // ensure the snapshot directory exists
+        new File(getSnapshotDir()).mkdirs();
+        // ensure the data dir exists
+        new File(getDataDir()).mkdirs();
     }
 
     public void initSize(String type) {
@@ -72,20 +75,24 @@ public class Sketch extends PApplet {
         endShape();
     }
 
+    public float noiseZ(float noiseScale, float x, float y, float z) {
+        return noise(noiseScale*(x+10000), noiseScale*(y+10000), noiseScale*(z+10000));
+    }
+
     @Override
     public void keyPressed(KeyEvent e) {
         super.keyPressed();
         println("key pressed");
         if (key == ' ') {
-            save();
+            snapshot();
         }
     }
 
-    public void save() {
+    public void snapshot() {
         System.out.println("saving code and raster");
         long now = System.currentTimeMillis()/1000L;
-        copyFile(getSketchSourceFile(), getArtifactPath("code-" + now + ".java"));
-        saveFrame(getArtifactPath("raster-" + now + ".png"));
+        copyFile(getSketchSourceFile(), getSnapshotPath("code-" + now + ".java"));
+        saveFrame(getSnapshotPath("raster-" + now + ".png"));
     }
 
     // todo - compatibility
@@ -114,53 +121,55 @@ public class Sketch extends PApplet {
     }
 
     public String getSketchSourceFile() {
-        StringBuilder javaPath = new StringBuilder();
-        javaPath.append(getSketchSourcePath()).append(File.separatorChar);
-        javaPath.append(getSketchSpecificPath()).append(".java");
-        return javaPath.toString();
+        return pathJoiner.join(getSketchSourcePath(), getSketchPathComponent() + ".java");
     }
 
-    public String getSketchSourcePath() {
-        StringBuilder path = new StringBuilder();
-        path.append(passageHome).append(File.separatorChar);
-        path.append("src/main/java");
-        return path.toString();
+    private String getSketchSourcePath() {
+        return pathJoiner.join(homeDir, "src/main/java");
     }
 
-    public String getSketchSpecificPath() {
+    public String getSketchPathComponent() {
         return this.getClass().getName().replace('.', File.separatorChar);
     }
 
     /**
      * @return the directory to which progress artifacts should be saved
      */
-    public String getArtifactDir() {
-        StringBuilder path = new StringBuilder();
-        path.append(passageArtifacts).append(File.separatorChar);
-        path.append(getSketchSpecificPath());
-        return path.toString();
+    public String getSnapshotDir() {
+        return pathJoiner.join(baseDataDir, getSketchPathComponent(), "snapshots");
     }
 
-    public String getArtifactPath(String name) {
-        StringBuilder path = new StringBuilder();
-        path.append(getArtifactDir()).append(File.separatorChar);
-        path.append(name);
-        return path.toString();
+    public String getSnapshotPath(String name) {
+        return pathJoiner.join(getSnapshotDir(), name);
     }
 
+    public String getDataDir() {
+        return pathJoiner.join(baseDataDir, getSketchPathComponent(), "data");
+    }
+
+    public String getDataPath(String name) {
+        return pathJoiner.join(getDataDir(), name);
+    }
+
+    @Override
+    public File dataFile(String where) {
+        File why = new File(where);
+        if (why.isAbsolute()) return why;
+        return new File(getDataPath(where));
+    }
 
     @Override
     public String getParameter(String name) {
         return System.getenv(name);
     }
 
-    public void debug() {
+    public void printenv() {
         System.out.println("sketch name: " + this.getClass().getName());
-        System.out.println("PASSAGE_HOME=" + passageHome);
-        System.out.println("PASSAGE_ARTIFACTS=" + passageArtifacts);
-        System.out.println("sketch-specific path = " + getSketchSpecificPath());
+        System.out.println("PASSAGE_HOME=" + homeDir);
+        System.out.println("PASSAGE_DATA=" + baseDataDir);
+        System.out.println("sketch-specific path = " + getSketchPathComponent());
         System.out.println("sketch source = " + getSketchSourcePath());
         System.out.println("sketch source file = " + getSketchSourceFile());
-        System.out.println("progress artifact dir = " + getArtifactDir());
+        System.out.println("snapshot dir = " + getSnapshotDir());
     }
 }
