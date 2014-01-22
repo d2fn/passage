@@ -11,7 +11,7 @@ public class TestSketch extends Sketch {
     @Override
     public void setup() {
         initSize(P2D);
-        debug();
+        printenv();
     }
 
     @Override
