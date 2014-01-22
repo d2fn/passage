@@ -56,6 +56,10 @@ public class Sketch extends PApplet {
     protected void renderFrame() {}
     protected void afterFrame() {}
 
+    public int darker(int c) {
+       return color(round(red(c)*0.6f), round(green(c)*0.6f), round(blue(c)*0.6f));
+    }
+
     void vertex(SphericalPoint p) {
         vertex(p.x(), p.y(), p.z());
     }
