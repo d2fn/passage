@@ -47,6 +47,10 @@ public class Sketch extends PApplet {
         return 720;
     }
 
+    public float getAspectRatio() {
+        return (float)getTargetWidth() / (float)getTargetHeight();
+    }
+
      @Override
     public final void draw() {
         beforeFrame();
