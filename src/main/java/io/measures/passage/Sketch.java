@@ -1,9 +1,11 @@
-package org.measures.passage;
+package io.measures.passage;
 
 import com.google.common.base.Joiner;
+import io.measures.passage.geometry.Model3D;
+import io.measures.passage.geometry.Projectable3D;
+import io.measures.passage.geometry.Triangle3D;
 import processing.core.PApplet;
 
-import org.measures.passage.geometry.SphericalPoint;
 import processing.event.KeyEvent;
 
 import java.io.File;
@@ -60,15 +62,15 @@ public class Sketch extends PApplet {
        return color(round(red(c)*0.6f), round(green(c)*0.6f), round(blue(c)*0.6f));
     }
 
-    void vertex(SphericalPoint p) {
+    public void vertex(Projectable3D p) {
         vertex(p.x(), p.y(), p.z());
     }
 
-    void line(SphericalPoint a, SphericalPoint b) {
+    public void line(Projectable3D a, Projectable3D b) {
         line(a.x(), b.y(), b.z(), b.x(), b.y(), b.z());
     }
 
-    void triangles(SphericalPoint a, SphericalPoint b, SphericalPoint c, SphericalPoint d) {
+    void triangles(Projectable3D a, Projectable3D b, Projectable3D c, Projectable3D d) {
         beginShape(TRIANGLES);
         vertex(a);
         vertex(b);
@@ -76,6 +78,16 @@ public class Sketch extends PApplet {
         vertex(d);
         vertex(c);
         vertex(b);
+        endShape();
+    }
+
+    public void renderModel(Model3D model) {
+        beginShape(TRIANGLES);
+        for(Triangle3D t : model.getTriangles()) {
+            vertex(t.a());
+            vertex(t.b());
+            vertex(t.c());
+        }
         endShape();
     }
 

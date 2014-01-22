@@ -112,7 +112,7 @@
                                         implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer"/>
                                 <transformer
                                         implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
-                                    <mainClass>org.measures.passage.SketchRunner</mainClass>
+                                    <mainClass>io.measures.passage.SketchRunner</mainClass>
                                 </transformer>
                             </transformers>
                         </configuration>

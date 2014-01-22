@@ -1,7 +1,6 @@
-package org.measures.passage;
+package io.measures.passage;
 
-import com.d2fn.passage.sketches.SimpleTerrain01;
-import com.d2fn.passage.sketches.TestSketch;
+import com.d2fn.passage.sketches.RockMatrixSketch;
 
 import javax.swing.*;
 import java.awt.*;
@@ -23,7 +22,8 @@ public class Runner {
 
     public static void main(String[] args) {
 //        new Runner(new SimpleTerrain01());
-        new Runner(new TestSketch());
+//        new Runner(new TestSketch());
+        new Runner(new RockMatrixSketch());
     }
 
     private class SketchFrame extends JFrame {

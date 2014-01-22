@@ -1,8 +1,8 @@
-package org.measures.passage.geometry;
+package io.measures.passage.geometry;
 
-import static org.measures.passage.Sketch.*;
+import static io.measures.passage.Sketch.*;
 
-public class SphericalPoint {
+public class SphericalPoint implements Projectable3D {
 
     private float r, phi, theta;
 
@@ -12,6 +12,7 @@ public class SphericalPoint {
         this.theta = theta;
     }
 
+    // todo - make latlng its own Projectable3D impl
     public SphericalPoint latlng(float r, float lat, float lng) {
         this.r = r;
         this.phi = radians(lng);
