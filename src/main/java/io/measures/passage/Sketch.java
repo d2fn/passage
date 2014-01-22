@@ -3,6 +3,7 @@ package io.measures.passage;
 import com.google.common.base.Joiner;
 import io.measures.passage.geometry.Model3D;
 import io.measures.passage.geometry.Projectable3D;
+import io.measures.passage.geometry.SphericalPoint;
 import io.measures.passage.geometry.Triangle3D;
 import processing.core.PApplet;
 
@@ -93,6 +94,16 @@ public class Sketch extends PApplet {
             vertex(t.c());
         }
         endShape();
+    }
+
+    public void translate(Projectable3D p) {
+        translate(p.x(), p.y(), p.z());
+    }
+
+    public void translateNormal(SphericalPoint p) {
+        rotateZ(p.phi());
+        rotateY(p.theta());
+        translate(0, 0, p.r());
     }
 
     public float noiseZ(float noiseScale, float x, float y, float z) {
