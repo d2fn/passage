@@ -1,4 +1,4 @@
-package com.d2fn.passage.sketches;
+package io.measures.passage;
 
 import io.measures.passage.Sketch;
 import processing.core.PImage;
