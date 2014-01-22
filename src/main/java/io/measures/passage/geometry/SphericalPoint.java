@@ -12,6 +12,18 @@ public class SphericalPoint implements Projectable3D {
         this.theta = theta;
     }
 
+    public float r() {
+        return r;
+    }
+
+    public float phi() {
+        return phi;
+    }
+
+    public float theta() {
+        return theta;
+    }
+
     // todo - make latlng its own Projectable3D impl
     public SphericalPoint latlng(float r, float lat, float lng) {
         this.r = r;
