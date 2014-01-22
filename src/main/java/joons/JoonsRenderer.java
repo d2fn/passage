@@ -46,6 +46,10 @@ public class JoonsRenderer{
     public boolean isRendered() {
         return rendered;
     }
+
+    public boolean isRendering() {
+        return rendering;
+    }
 	
 	//image settings interface
 	public void setSizeMultiplier(double multiplier) {
