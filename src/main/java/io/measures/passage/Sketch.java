@@ -28,8 +28,16 @@ public class Sketch extends PApplet {
     protected static final Joiner pathJoiner = Joiner.on(File.separatorChar);
 
     public Sketch() {
-        homeDir = getParameter("PASSAGE_HOME");
+
+        String homeDir = getParameter("PASSAGE_HOME");
+        String userDir = System.getProperty("user.dir");
+        if(homeDir == null) {
+            homeDir = userDir;
+        }
+        this.homeDir = homeDir;
+
         baseDataDir = getParameter("PASSAGE_DATA") == null ? homeDir : getParameter("PASSAGE_DATA");
+
         // ensure the snapshot directory exists
         new File(getSnapshotDir()).mkdirs();
         // ensure the data dir exists
