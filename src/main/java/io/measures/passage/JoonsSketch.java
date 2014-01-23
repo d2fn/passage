@@ -16,6 +16,19 @@ public class JoonsSketch extends Sketch {
     protected boolean waitingForRender = false;
 
     @Override
+    public void setup() {
+        initSize(P3D);
+        jr = new JoonsRenderer(this);
+        jr.setSampler("bucket");
+        jr.setSizeMultiplier(1);
+        jr.setAA(0, 2, 4);
+        noiseDetail(3, 0.5f);
+        randomSeed(0);
+        noiseSeed(1);
+        frameRate(1);
+    }
+
+    @Override
     protected void beforeFrame() {
         super.beforeFrame();
     }
@@ -48,6 +61,15 @@ public class JoonsSketch extends Sketch {
         vertex(-w/2,  h/2, 0);
         vertex( w/2,  h/2, 0);
         vertex( w/2, -h/2, 0);
+        endShape();
+    }
+
+    public void panelYZ(float w, float h) {
+        beginShape(QUADS);
+        vertex(0, -w/2, -h/2);
+        vertex(0, -w/2,  h/2);
+        vertex(0,  w/2,  h/2);
+        vertex(0,  w/2, -h/2);
         endShape();
     }
 }
