@@ -1,7 +1,5 @@
 package io.measures.passage;
 
-import com.d2fn.passage.sketches.RockMatrixSketch;
-
 import javax.swing.*;
 import java.awt.*;
 
@@ -20,10 +18,16 @@ public class Runner {
         });
     }
 
-    public static void main(String[] args) {
-//        new Runner(new SimpleTerrain01());
-//        new Runner(new TestSketch());
-        new Runner(new RockMatrixSketch());
+    private static final void usage(String[] args) {
+        System.out.println("usage: " + args[0] + " [sketchname]");
+    }
+
+    public static void main(String[] args) throws Exception {
+        if(args.length != 2) usage(args);
+        String className = args[1];
+        Class<? extends Sketch> c = (Class<Sketch>)Class.forName(className);
+        Sketch s = c.newInstance();
+        new Runner(s);
     }
 
     private class SketchFrame extends JFrame {
