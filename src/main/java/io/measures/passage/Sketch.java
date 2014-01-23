@@ -67,9 +67,9 @@ public class Sketch extends PApplet {
         afterFrame();
     }
 
-    protected void beforeFrame() {}
-    protected void renderFrame() {}
-    protected void afterFrame() {}
+    public void beforeFrame() {}
+    public void renderFrame() {}
+    public void afterFrame() {}
 
     public int darker(int c) {
        return color(round(red(c)*0.6f), round(green(c)*0.6f), round(blue(c)*0.6f));
@@ -81,17 +81,6 @@ public class Sketch extends PApplet {
 
     public void line(Projectable3D a, Projectable3D b) {
         line(a.x(), b.y(), b.z(), b.x(), b.y(), b.z());
-    }
-
-    void triangles(Projectable3D a, Projectable3D b, Projectable3D c, Projectable3D d) {
-        beginShape(TRIANGLES);
-        vertex(a);
-        vertex(b);
-        vertex(c);
-        vertex(d);
-        vertex(c);
-        vertex(b);
-        endShape();
     }
 
     public void renderModel(Model3D model) {
@@ -135,7 +124,7 @@ public class Sketch extends PApplet {
     }
 
     // todo - compatibility
-    void copyFile(String from, String to) {
+    public void copyFile(String from, String to) {
         try {
             String command = "cp " + from + " " + to;
             println("running command \"" + command + "\"");
@@ -151,7 +140,7 @@ public class Sketch extends PApplet {
         }
     }
 
-    void copy(InputStream in, OutputStream out) throws IOException {
+    public void copy(InputStream in, OutputStream out) throws IOException {
         while (true) {
             int c = in.read();
             if (c == -1) break;
@@ -194,7 +183,13 @@ public class Sketch extends PApplet {
     public File dataFile(String where) {
         File why = new File(where);
         if (why.isAbsolute()) return why;
-        return new File(getDataPath(where));
+        File sketchSpecificFile = new File(getDataPath(where));
+        if(sketchSpecificFile.exists()) {
+            return sketchSpecificFile;
+        }
+        else {
+            return why;
+        }
     }
 
     @Override
