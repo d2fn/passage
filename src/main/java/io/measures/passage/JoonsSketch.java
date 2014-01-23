@@ -29,12 +29,12 @@ public class JoonsSketch extends Sketch {
     }
 
     @Override
-    protected void beforeFrame() {
+    public void beforeFrame() {
         super.beforeFrame();
     }
 
     @Override
-    protected void afterFrame() {
+    public void afterFrame() {
         super.afterFrame();
         if(triggerRender && !jr.isRendering()) {
             triggerRender = false;
@@ -53,6 +53,42 @@ public class JoonsSketch extends Sketch {
         if (key == 'r' || key == 'R') {
             triggerRender = true;
         }
+    }
+
+    /**
+     * default lights
+     */
+    @Override
+    public void lights() {
+        jr.fill("light", 30, 30, 30, 64);
+        pushMatrix();
+        translate(100, -50, 300);
+        sphere(80);
+        popMatrix();
+    }
+
+    /**
+     * default camera
+     */
+    @Override
+    public void camera() {
+        //Camera Setting.
+        float eyeX = 0;
+        float eyeY = 0;
+        float eyeZ = 70;
+        float centerX = 0;
+        float centerY = -1;
+        float centerZ = 0;
+
+        float upX = 0;
+        float upY = 0;
+        float upZ = -1;
+        float fov = PI/3;
+        float zNear = 1;
+        float zFar = 10000;
+
+        camera(eyeX, eyeY, eyeZ, centerX, centerY, centerZ, upX, upY, upZ);
+        perspective(fov, getAspectRatio(), zNear, zFar);
     }
 
     public void panelXY(float w, float h) {
