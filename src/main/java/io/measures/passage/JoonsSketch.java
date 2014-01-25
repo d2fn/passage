@@ -55,42 +55,6 @@ public class JoonsSketch extends Sketch {
         }
     }
 
-    /**
-     * default lights
-     */
-    @Override
-    public void lights() {
-        jr.fill("light", 30, 30, 30, 64);
-        pushMatrix();
-        translate(100, -50, 300);
-        sphere(80);
-        popMatrix();
-    }
-
-    /**
-     * default camera
-     */
-    @Override
-    public void camera() {
-        //Camera Setting.
-        float eyeX = 0;
-        float eyeY = 0;
-        float eyeZ = 70;
-        float centerX = 0;
-        float centerY = -1;
-        float centerZ = 0;
-
-        float upX = 0;
-        float upY = 0;
-        float upZ = -1;
-        float fov = PI/3;
-        float zNear = 1;
-        float zFar = 10000;
-
-        camera(eyeX, eyeY, eyeZ, centerX, centerY, centerZ, upX, upY, upZ);
-        perspective(fov, getAspectRatio(), zNear, zFar);
-    }
-
     public void panelXY(float w, float h) {
         beginShape(QUADS);
         vertex(-w/2, -h/2, 0);
