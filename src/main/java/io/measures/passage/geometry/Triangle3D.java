@@ -24,4 +24,11 @@ public class Triangle3D {
     public Projectable3D c() {
         return c;
     }
+
+    public Point3D center() {
+        float x = (a.x() + b.x() + c.x())/3;
+        float y = (a.y() + b.y() + c.y())/3;
+        float z = (a.z() + b.z() + c.z())/3;
+        return new Point3D(x, y, z);
+    }
 }
