@@ -33,14 +33,15 @@ public class Runner {
     private class SketchFrame extends JFrame {
         SketchFrame(final Sketch s) {
             super("passage");
+            Dimension d = new Dimension(s.getTargetWidth(), s.getTargetHeight());
             setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-            getContentPane().setPreferredSize(new Dimension(s.getTargetWidth(), s.getTargetHeight()));
-            getContentPane().setSize(s.getTargetWidth(), s.getTargetHeight());
+            getContentPane().setPreferredSize(d);
+            getContentPane().setSize(d);
             getContentPane().add(s, BorderLayout.CENTER);
             pack();
             setVisible(true);
             s.init();
-            setLocation(100, 100);
+            setMinimumSize(d);
             setResizable(false);
         }
     }
