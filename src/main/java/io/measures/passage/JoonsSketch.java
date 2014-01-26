@@ -25,7 +25,6 @@ public class JoonsSketch extends Sketch {
         noiseDetail(3, 0.5f);
         randomSeed(0);
         noiseSeed(1);
-        frameRate(1);
     }
 
     @Override
@@ -55,7 +54,7 @@ public class JoonsSketch extends Sketch {
         }
     }
 
-    public void panelXY(float w, float h) {
+    public void planeXY(float w, float h) {
         beginShape(QUADS);
         vertex(-w/2, -h/2, 0);
         vertex(-w/2,  h/2, 0);
@@ -64,12 +63,20 @@ public class JoonsSketch extends Sketch {
         endShape();
     }
 
-    public void panelYZ(float w, float h) {
+    public void planeYZ(float w, float h) {
         beginShape(QUADS);
         vertex(0, -w/2, -h/2);
         vertex(0, -w/2,  h/2);
         vertex(0,  w/2,  h/2);
         vertex(0,  w/2, -h/2);
         endShape();
+    }
+
+    public void diffuseFill(int color) {
+        jr.fill("diffuse", red(color), green(color), blue(color));
+    }
+
+    public void lightFill() {
+        jr.fill("light", 30, 30, 30, 64);
     }
 }

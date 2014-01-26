@@ -80,7 +80,7 @@ public class Sketch extends PApplet {
     }
 
     public void line(Projectable3D a, Projectable3D b) {
-        line(a.x(), b.y(), b.z(), b.x(), b.y(), b.z());
+        line(a.x(), a.y(), a.z(), b.x(), b.y(), b.z());
     }
 
     public void renderModel(Model3D model) {
@@ -90,6 +90,14 @@ public class Sketch extends PApplet {
             vertex(t.b());
             vertex(t.c());
         }
+        endShape();
+    }
+
+    public void triangle(Triangle3D t) {
+        beginShape(TRIANGLE);
+        vertex(t.a());
+        vertex(t.b());
+        vertex(t.c());
         endShape();
     }
 
