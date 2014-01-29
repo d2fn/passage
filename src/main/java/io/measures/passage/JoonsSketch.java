@@ -76,6 +76,29 @@ public class JoonsSketch extends Sketch {
         jr.fill("diffuse", red(color), green(color), blue(color));
     }
 
+    public void glassFill(int color) {
+        jr.fill("glass", red(color), green(color), blue(color));
+    }
+
+    public void shinyFill(int color, float shininess) {
+        jr.fill("shiny", red(color), green(color), blue(color), shininess);
+    }
+
+    public void phongFill(int color) {
+        jr.fill("phong", red(color), green(color), blue(color));
+    }
+
+    public void ambientOcclusionFill(int brightColor, int darkColor, float maxDist, int samples) {
+        jr.fill("ambient_occlusion",
+                red(brightColor), green(brightColor), blue(brightColor),
+                red(darkColor), green(darkColor), blue(darkColor),
+                maxDist, samples);
+    }
+
+    public void mirrorFill(int color) {
+        jr.fill("mirror", red(color), green(color), blue(color));
+    }
+
     public void lightFill() {
         jr.fill("light", 30, 30, 30, 64);
     }
