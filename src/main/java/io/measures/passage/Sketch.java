@@ -2,6 +2,8 @@ package io.measures.passage;
 
 import com.google.common.base.Joiner;
 import io.measures.passage.geometry.Model3D;
+import io.measures.passage.geometry.Point2D;
+import io.measures.passage.geometry.Projectable2D;
 import io.measures.passage.geometry.Projectable3D;
 import io.measures.passage.geometry.SphericalPoint;
 import io.measures.passage.geometry.Triangle3D;
@@ -73,6 +75,21 @@ public class Sketch extends PApplet {
 
     public int darker(int c) {
        return color(round(red(c)*0.6f), round(green(c)*0.6f), round(blue(c)*0.6f));
+    }
+
+    public int lighter(int c) {
+        return color(
+                constrain(round(red(c)*1.1f), 0, 255),
+                constrain(round(green(c)*1.1f), 0, 255),
+                constrain(round(blue(c)*1.1f), 0, 255));
+    }
+
+    public void point(Projectable2D p) {
+        point(p.x(), p.y());
+    }
+
+    public void point(Projectable3D p) {
+        point(p.x(), p.y(), p.z());
     }
 
     public void vertex(Projectable3D p) {
