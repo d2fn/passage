@@ -38,10 +38,12 @@ public class Runner {
             getContentPane().setPreferredSize(d);
             getContentPane().setSize(d);
             getContentPane().add(s, BorderLayout.CENTER);
+            setMinimumSize(d);
+            setSize(d);
+            setPreferredSize(d);
             pack();
             setVisible(true);
             s.init();
-            setMinimumSize(d);
             setResizable(false);
         }
     }
