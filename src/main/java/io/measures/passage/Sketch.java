@@ -29,6 +29,18 @@ public class Sketch extends PApplet {
 
     protected static final Joiner pathJoiner = Joiner.on(File.separatorChar);
 
+    public final int slate = color(50);
+    public final int gray = color(180);
+    public final int yellow = color(255, 255, 1);
+    public final int pink = color(255, 46, 112);
+    public final int teal = color(85, 195, 194);
+    public final int nak = color(0, 170, 255);
+    public final int blue = color(49, 130, 189);
+    public final int darkblue = color(49, 130, 189);
+    public final int lightblue = color(222, 235, 247);
+
+    private PGraphics paperGraphics;
+
     public Sketch() {
 
         String homeDir = getParameter("PASSAGE_HOME");
