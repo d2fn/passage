@@ -9,6 +9,7 @@ import io.measures.passage.geometry.SphericalPoint;
 import io.measures.passage.geometry.Triangle3D;
 import processing.core.PApplet;
 
+import processing.core.PGraphics;
 import processing.event.KeyEvent;
 
 import java.io.File;
@@ -242,5 +243,27 @@ public class Sketch extends PApplet {
         System.out.println("sketch source = " + getSketchSourcePath());
         System.out.println("sketch source file = " + getSketchSourceFile());
         System.out.println("snapshot dir = " + getSnapshotDir());
+    }
+
+    public void oldPaperBackground() {
+        if(paperGraphics == null) {
+            int center = color(252, 243, 211);
+            int edge = color(245, 222, 191);
+            PGraphics g = createGraphics(10, 10);
+            g.beginDraw();
+            g.noStroke();
+            g.background(edge);
+            g.fill(center);
+            g.ellipse(g.width/2, g.height/2, g.width*0.8f, g.height*0.8f);
+            g.filter(BLUR, 2);
+            g.endDraw();
+            /*
+            g.filter(BLUR, width/30);
+            g.filter(BLUR, width/30);
+            g.filter(BLUR, width/30);
+            */
+            paperGraphics = g;
+        }
+        image(paperGraphics, 0, 0, width, height);
     }
 }
