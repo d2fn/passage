@@ -1,5 +1,7 @@
 package io.measures.passage.geometry;
 
+import com.google.common.base.Objects;
+
 /**
  * Point2D
  * @author Dietrich Featherston
@@ -33,5 +35,10 @@ public class Point2D implements Projectable2D {
 
     public float[] toArray() {
         return new float[] { x(), y() };
+    }
+
+    @Override
+    public String toString() {
+        return Objects.toStringHelper(Point2D.class).add("x", x).add("y", y).toString();
     }
 }
