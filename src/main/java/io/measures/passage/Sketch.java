@@ -10,6 +10,7 @@ import io.measures.passage.geometry.Triangle3D;
 import processing.core.PApplet;
 
 import processing.core.PGraphics;
+import processing.core.PImage;
 import processing.event.KeyEvent;
 
 import java.io.File;
@@ -39,6 +40,7 @@ public class Sketch extends PApplet {
     public final int blue = color(49, 130, 189);
     public final int darkblue = color(49, 130, 189);
     public final int lightblue = color(222, 235, 247);
+    public final int redorange = color(240, 59, 32);
 
     private PGraphics paperGraphics;
 
@@ -109,8 +111,16 @@ public class Sketch extends PApplet {
         vertex(p.x(), p.y(), p.z());
     }
 
+    public void vertex(Projectable2D p) {
+        vertex(p.x(), p.y());
+    }
+
     public void line(Projectable3D a, Projectable3D b) {
         line(a.x(), a.y(), a.z(), b.x(), b.y(), b.z());
+    }
+
+    public void line(Projectable2D a, Projectable2D b) {
+        line(a.x(), a.y(), b.x(), b.y());
     }
 
     public void renderModel(Model3D model) {
@@ -131,6 +141,10 @@ public class Sketch extends PApplet {
         endShape();
     }
 
+    public void translate(Projectable2D p) {
+        translate(p.x(), p.y());
+    }
+
     public void translate(Projectable3D p) {
         translate(p.x(), p.y(), p.z());
     }
@@ -139,6 +153,14 @@ public class Sketch extends PApplet {
         rotateZ(p.phi());
         rotateY(p.theta());
         translate(0, 0, p.r());
+    }
+
+    public static float dist(Projectable2D a, Projectable2D b) {
+        return dist(a.x(), a.y(), b.x(), b.y());
+    }
+
+    public static float dist(Projectable3D a, Projectable3D b) {
+        return dist(a.x(), a.y(), a.z(), b.x(), b.y(), b.z());
     }
 
     public float noiseZ(float noiseScale, float x, float y, float z) {
@@ -217,6 +239,17 @@ public class Sketch extends PApplet {
         return pathJoiner.join(getDataDir(), name);
     }
 
+    public static void fit(PImage img, int maxWidth, int maxHeight) {
+        // oblig image resizing to fit in our space
+        float imgratio = (float)img.width / (float)img.height;
+        if(img.width > img.height) {
+            img.resize(round(imgratio * maxHeight), maxHeight);
+        }
+        else {
+            img.resize(maxWidth, round(maxWidth/imgratio));
+        }
+    }
+
     @Override
     public File dataFile(String where) {
         File why = new File(where);
@@ -264,6 +297,5 @@ public class Sketch extends PApplet {
             */
             paperGraphics = g;
         }
-        image(paperGraphics, 0, 0, width, height);
     }
 }
