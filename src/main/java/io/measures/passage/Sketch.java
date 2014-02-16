@@ -177,22 +177,27 @@ public class Sketch extends PApplet {
     }
 
     public void snapshot() {
-        System.out.println("saving code and raster");
-        long now = System.currentTimeMillis()/1000L;
-        copyFile(getSketchSourceFile(), getSnapshotPath("code-" + now + ".java"));
-        saveFrame(getSnapshotPath("raster-" + now + ".png"));
+        snapshotCode();
+        snapshotFrame();
+    }
+
+    public void snapshotCode() {
+        println("taking code snapshot");
+        copyFile(getSketchSourceFile(), getSnapshotPath("code-" + startedAt + ".java"));
+    }
+
+    public void snapshotFrame() {
+        println("taking raster snapshot");
+        saveFrame(getSnapshotPath("raster-" + startedAt + ".png"));
     }
 
     // todo - compatibility
     public void copyFile(String from, String to) {
         try {
             String command = "cp " + from + " " + to;
-            println("running command \"" + command + "\"");
             Process p = Runtime.getRuntime().exec(command);
             copy(p.getInputStream(), System.out);
             copy(p.getErrorStream(), System.err);
-            int exitValue = p.waitFor();
-            println("command exited with code " + exitValue);
         }
         catch(Exception ignored) {
             println(ignored.getMessage());
