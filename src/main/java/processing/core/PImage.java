@@ -24,6 +24,8 @@
 
 package processing.core;
 
+import io.measures.passage.geometry.Projectable2D;
+
 import java.awt.*;
 import java.awt.image.*;
 import java.io.*;
@@ -794,6 +796,10 @@ public class PImage implements PConstants, Cloneable {
         return (pixels[y*width + x] << 24) | 0xffffff;
     }
     return 0;
+  }
+
+  public int get(Projectable2D p) {
+    return get(Math.round(p.x()), Math.round(p.y()));
   }
 
 

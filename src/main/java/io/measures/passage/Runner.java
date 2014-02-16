@@ -42,6 +42,7 @@ public class Runner {
             setSize(d);
             setPreferredSize(d);
             pack();
+            setLocation(0, 0);
             setVisible(true);
             s.init();
             setResizable(false);
