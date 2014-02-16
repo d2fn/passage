@@ -24,6 +24,7 @@
 
 package processing.core;
 
+import io.measures.passage.geometry.Projectable2D;
 import processing.data.*;
 import processing.event.*;
 import processing.event.Event;
@@ -12003,6 +12004,11 @@ public class PApplet extends Applet
   public void ellipse(float a, float b, float c, float d) {
     if (recorder != null) recorder.ellipse(a, b, c, d);
     g.ellipse(a, b, c, d);
+  }
+
+  public void ellipse(Projectable2D p, float c, float d) {
+    if (recorder != null) recorder.ellipse(p.x(), p.y(), c, d);
+    g.ellipse(p.x(), p.y(), c, d);
   }
 
 
