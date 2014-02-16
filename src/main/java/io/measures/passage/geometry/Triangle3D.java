@@ -1,10 +1,13 @@
 package io.measures.passage.geometry;
 
+import static io.measures.passage.Sketch.*;
+
 /**
  * Triangle3D
  * @author Dietrich Featherston
  */
 public class Triangle3D {
+
     private final Projectable3D a, b, c;
 
     public Triangle3D(Projectable3D a, Projectable3D b, Projectable3D c) {
@@ -25,10 +28,14 @@ public class Triangle3D {
         return c;
     }
 
-    public Point3D center() {
+    public Point3D centroid() {
         float x = (a.x() + b.x() + c.x())/3;
         float y = (a.y() + b.y() + c.y())/3;
         float z = (a.z() + b.z() + c.z())/3;
         return new Point3D(x, y, z);
+    }
+
+    public float perimeter() {
+        return dist(a, b) + dist(b, c) + dist(c, a);
     }
 }
