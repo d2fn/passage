@@ -44,6 +44,11 @@ public class Sketch extends PApplet {
 
     private PGraphics paperGraphics;
 
+    protected boolean recordPdf = false;
+
+    private boolean saveAnimation = false;
+    private int numAnimationFrames = 100;
+
     public Sketch() {
 
         String homeDir = getParameter("PASSAGE_HOME");
@@ -77,16 +82,48 @@ public class Sketch extends PApplet {
         return (float)getTargetWidth() / (float)getTargetHeight();
     }
 
+    public void saveAnimation() {
+        this.saveAnimation = true;
+    }
+
+    public void animationFrames(int n) {
+        numAnimationFrames = n;
+    }
+
      @Override
     public final void draw() {
         beforeFrame();
-        renderFrame();
-        afterFrame();
+        try {
+            renderFrame();
+        } catch(Exception e) {
+            println(e.getMessage());
+        } finally {
+            afterFrame();
+        }
     }
 
-    public void beforeFrame() {}
-    public void renderFrame() {}
-    public void afterFrame() {}
+    public void beforeFrame() {
+        if(recordPdf) {
+            beginRaw(PDF, getSnapshotPath("vector-" + startedAt + ".pdf"));
+        }
+    }
+
+    public void renderFrame() {
+        println("ERROR - sketch renderFrame() not implemented");
+    }
+
+    public void afterFrame() {
+        if(recordPdf) {
+            endRaw();
+            recordPdf = false;
+        }
+        if(saveAnimation) {
+            saveFrame(getSnapshotPath("frames-" + startedAt + "/frame-#######.jpg"));
+            if(frameCount >= numAnimationFrames) {
+                exit();
+            }
+        }
+    }
 
     public int darker(int c) {
        return color(round(red(c)*0.6f), round(green(c)*0.6f), round(blue(c)*0.6f));
@@ -171,8 +208,14 @@ public class Sketch extends PApplet {
     public void keyPressed(KeyEvent e) {
         super.keyPressed();
         println("key pressed");
-        if (key == ' ') {
+        if(key == ' ') {
+            // snapshot raster graphics + code
             snapshot();
+        }
+        else if(key == 'p') {
+            // snapshot a pdf + code
+            recordPdf = true;
+            snapshotCode();
         }
     }
 
@@ -244,6 +287,14 @@ public class Sketch extends PApplet {
         return pathJoiner.join(getDataDir(), name);
     }
 
+    public String getHomeDir() {
+        return homeDir;
+    }
+
+    public String getHomePath(String name) {
+        return pathJoiner.join(getHomeDir(), name);
+    }
+
     public static void fit(PImage img, int maxWidth, int maxHeight) {
         // oblig image resizing to fit in our space
         float imgratio = (float)img.width / (float)img.height;
@@ -264,8 +315,12 @@ public class Sketch extends PApplet {
             return sketchSpecificFile;
         }
         else {
-            return why;
+            File f = new File(pathJoiner.join(baseDataDir, "data", where));
+            if(f.exists()) {
+                return f;
+            }
         }
+        return why;
     }
 
     @Override
