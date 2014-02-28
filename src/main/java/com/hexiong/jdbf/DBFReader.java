@@ -30,6 +30,18 @@ public class DBFReader {
       throw new JDBFException(filenotfoundexception);
     }
   }
+  public DBFReader(File f) throws JDBFException {
+      stream = null;
+      fields = null;
+      nextRecord = null;
+      nFieldCount = 0;
+      try {
+          init(new FileInputStream(f));
+      }
+      catch (FileNotFoundException filenotfoundexception) {
+          throw new JDBFException(filenotfoundexception);
+      }
+  }
   /**
    * 使用inputstream来构造DBFReader
    * @param inputstream 输入流
