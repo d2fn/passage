@@ -25,6 +25,7 @@
 package processing.core;
 
 import io.measures.passage.geometry.Projectable2D;
+import io.measures.passage.geometry.Projectable3D;
 import processing.data.*;
 import processing.event.*;
 import processing.event.Event;
@@ -11748,6 +11749,9 @@ public class PApplet extends Applet
     g.curveVertex(x, y);
   }
 
+  public void curveVertex(Projectable2D p) {
+    curveVertex(p.x(), p.y());
+  }
 
   /**
    * @param z the z-coordinate of the vertex
@@ -11755,6 +11759,10 @@ public class PApplet extends Applet
   public void curveVertex(float x, float y, float z) {
     if (recorder != null) recorder.curveVertex(x, y, z);
     g.curveVertex(x, y, z);
+  }
+
+  public void curveVertex(Projectable3D p) {
+    curveVertex(p.x(), p.y(), p.z());
   }
 
 

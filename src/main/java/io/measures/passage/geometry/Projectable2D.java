@@ -10,4 +10,5 @@ public interface Projectable2D {
     public Projectable2D add(Projectable2D b);
     public Projectable2D sub(Projectable2D b);
     public Projectable2D mid(Projectable2D b);
+    public Projectable2D scale(float amt);
 }

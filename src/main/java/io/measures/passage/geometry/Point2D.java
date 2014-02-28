@@ -33,6 +33,11 @@ public class Point2D implements Projectable2D {
         return new Point2D((x + b.x())/2f, (y + b.y())/2f);
     }
 
+    @Override
+    public Projectable2D scale(float amt) {
+        return new Point2D(x * amt, y * amt);
+    }
+
     public float[] toArray() {
         return new float[] { x(), y() };
     }

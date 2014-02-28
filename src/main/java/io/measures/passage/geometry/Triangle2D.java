@@ -11,7 +11,7 @@ import static io.measures.passage.Sketch.*;
  */
 public class Triangle2D {
 
-    private final Projectable2D a, b, c;
+    protected final Projectable2D a, b, c;
 
     public Triangle2D(Projectable2D a, Projectable2D b, Projectable2D c) {
         this.a = a;
