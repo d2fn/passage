@@ -24,7 +24,7 @@ public class JoonsSketch extends Sketch {
         jr.setAA(0, 2, 4);
         noiseDetail(3, 0.5f);
         randomSeed(0);
-        noiseSeed(1);
+        noiseSeed(0);
     }
 
     @Override
