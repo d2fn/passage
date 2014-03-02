@@ -12,6 +12,7 @@
     <properties>
         <dropwizard.version>0.6.1</dropwizard.version>
         <itext.version>2.1.7</itext.version>
+        <trove.version>3.0.3</trove.version>
         <janino.version>2.5.10</janino.version>
         <joda-time.version>2.3</joda-time.version>
         <jogl.version>2.1.3</jogl.version>
@@ -25,6 +26,11 @@
             <groupId>com.vividsolutions</groupId>
             <artifactId>jts</artifactId>
             <version>${jts.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>net.sf.trove4j</groupId>
+            <artifactId>trove4j</artifactId>
+            <version>${trove.version}</version>
         </dependency>
         <dependency>
             <groupId>com.yammer.dropwizard</groupId>
