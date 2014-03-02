@@ -1,5 +1,6 @@
 package megamu.mesh;
 
+import gnu.trove.list.array.TIntArrayList;
 import quickhull3d.QuickHull3D;
 
 public class Voronoi {
@@ -75,9 +76,9 @@ public class Voronoi {
 		edges = new float[1][4];
 		int edgeCount = 0;
 		LinkedArray faceNet = new LinkedArray(faces.length);
-		IntArray[] pointBuckets = new IntArray[points.length];
+		TIntArrayList[] pointBuckets = new TIntArrayList[points.length];
 		for(int i=0; i<points.length; i++)
-			pointBuckets[i] = new IntArray();
+			pointBuckets[i] = new TIntArrayList();
 
 		// discover edges
 		for(int i = 0; i < faces.length; i++){
@@ -118,36 +119,40 @@ public class Voronoi {
 		// calculate the region for each point
 		regions = new MPolygon[points.length];
 		for(int i=0; i<points.length; i++){
-			IntArray faceOrder = new IntArray(pointBuckets[i].length);
+            int len = pointBuckets[i].size();
+            if(len == 0) {
+                regions[i] = new MPolygon();
+            }
+            else {
+                TIntArrayList faceOrder = new TIntArrayList(pointBuckets[i].size());
 
-			// add coords of the region in the order they touch, starting with the convenient first
-			int p = pointBuckets[i].get(0);
-			while(p>=0){
+                // add coords of the region in the order they touch, starting with the convenient first
+                int p = pointBuckets[i].get(0);
+                while(p>=0){
 
-				faceOrder.add( p );
+                    faceOrder.add( p );
 
-				// find the next coordinate that is in this set that we haven't used yet
-				int newP = -1;
-				for( int k=0; k<faceNet.get(p).linkCount; k++ ){
-					int neighbor = faceNet.get(p).links[k];
-					if( !faceOrder.contains(neighbor) && pointBuckets[i].contains(neighbor) ){
-						newP = neighbor;
-						break;
-					}
-				}
-				p = newP;
+                    // find the next coordinate that is in this set that we haven't used yet
+                    int newP = -1;
+                    for( int k=0; k<faceNet.get(p).linkCount; k++ ){
+                        int neighbor = faceNet.get(p).links[k];
+                        if( !faceOrder.contains(neighbor) && pointBuckets[i].contains(neighbor) ){
+                            newP = neighbor;
+                            break;
+                        }
+                    }
+                    p = newP;
 
-			}
+                }
 
-			// turn the coordinates into a polygon
-			regions[i] = new MPolygon(pointBuckets[i].length);
-			for( int f=0; f<faceOrder.length; f++ ){
-				int face = faceOrder.get(f);
-				regions[i].add( (float) dualPoints[face][0], (float) dualPoints[face][1] );
-			}
-
+                // turn the coordinates into a polygon
+                regions[i] = new MPolygon(pointBuckets[i].size());
+                for( int f=0; f<faceOrder.size(); f++ ){
+                    int face = faceOrder.get(f);
+                    regions[i].add( (float) dualPoints[face][0], (float) dualPoints[face][1] );
+                }
+            }
 		}
-
 	}
 
 	public MPolygon[] getRegions(){
