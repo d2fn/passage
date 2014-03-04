@@ -1,5 +1,6 @@
 package megamu.mesh;
 
+import io.measures.passage.geometry.Point2D;
 import processing.core.*;
 
 public class MPolygon {
@@ -41,4 +42,16 @@ public class MPolygon {
 		return coords;
 	}
 
+    public Point2D getCentroid() {
+        float cx = 0f, cy = 0f;
+        for(float[] p : coords) {
+            cx += p[0]/coords.length;
+            cy += p[1]/coords.length;
+        }
+        return new Point2D(cx, cy);
+    }
+
+    public boolean isEmpty() {
+        return coords.length == 0;
+    }
 }

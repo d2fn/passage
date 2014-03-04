@@ -110,6 +110,7 @@ public class Sketch extends PApplet {
 
     public void renderFrame() {
         println("ERROR - sketch renderFrame() not implemented");
+        noLoop();
     }
 
     public void afterFrame() {
@@ -138,6 +139,12 @@ public class Sketch extends PApplet {
 
     public void point(Projectable2D p) {
         point(p.x(), p.y());
+    }
+
+    public void points(Iterable<? extends Projectable2D> points) {
+        for(Projectable2D p : points) {
+            point(p);
+        }
     }
 
     public void point(Projectable3D p) {
