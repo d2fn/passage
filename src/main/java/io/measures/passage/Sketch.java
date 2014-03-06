@@ -45,6 +45,7 @@ public class Sketch extends PApplet {
     private PGraphics paperGraphics;
 
     protected boolean recordPdf = false;
+    protected long pdfTime = 0L;
 
     private boolean saveAnimation = false;
     private int numAnimationFrames = 100;
@@ -104,7 +105,7 @@ public class Sketch extends PApplet {
 
     public void beforeFrame() {
         if(recordPdf) {
-            beginRaw(PDF, getSnapshotPath("vector-" + startedAt + ".pdf"));
+            beginRaw(PDF, getSnapshotPath("vector-" + pdfTime + ".pdf"));
         }
     }
 
@@ -214,7 +215,6 @@ public class Sketch extends PApplet {
     @Override
     public void keyPressed(KeyEvent e) {
         super.keyPressed();
-        println("key pressed");
         if(key == ' ') {
             // snapshot raster graphics + code
             snapshot();
@@ -222,23 +222,37 @@ public class Sketch extends PApplet {
         else if(key == 'p') {
             // snapshot a pdf + code
             recordPdf = true;
-            snapshotCode();
+            pdfTime = now();
+            snapshotCode(pdfTime);
         }
     }
 
+    public long now() {
+        return System.currentTimeMillis()/1000;
+    }
+
     public void snapshot() {
-        snapshotCode();
-        snapshotFrame();
+        long time = now();
+        snapshotCode(time);
+        snapshotFrame(time);
     }
 
     public void snapshotCode() {
+        snapshotCode(now());
+    }
+
+    public void snapshotCode(long time) {
         println("taking code snapshot");
-        copyFile(getSketchSourceFile(), getSnapshotPath("code-" + startedAt + ".java"));
+        copyFile(getSketchSourceFile(), getSnapshotPath("code-" + time + ".java"));
     }
 
     public void snapshotFrame() {
+        snapshotFrame(now());
+    }
+
+    public void snapshotFrame(long time) {
         println("taking raster snapshot");
-        saveFrame(getSnapshotPath("raster-" + startedAt + ".jpg"));
+        saveFrame(getSnapshotPath("raster-" + time + ".jpg"));
     }
 
     // todo - compatibility
