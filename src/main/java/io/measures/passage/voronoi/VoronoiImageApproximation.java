@@ -19,13 +19,13 @@ import quickhull3d.QuickHull3D;
 
 import static processing.core.PApplet.*;
 
+import java.awt.*;
 import java.text.DecimalFormat;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -39,6 +39,7 @@ import java.util.concurrent.TimeUnit;
 public class VoronoiImageApproximation implements Model3D {
 
     private final Sketch s;
+    private final Mode mode;
     private final PImage img;
     private final LinkedList<Point2D> available;
     private final LinkedList<Point2D> generatingPoints;
@@ -46,15 +47,13 @@ public class VoronoiImageApproximation implements Model3D {
     private final DecimalFormat df = new DecimalFormat("0.##");
 
     private MPolygon[] regions;
-
     private final float maxHeight;
-
     private Envelope imageBounds;
-
     private final ExecutorService threadpool;
 
-    public VoronoiImageApproximation(Sketch s, PImage img, int brightnessThreshold, int weighting, float maxHeight) {
+    public VoronoiImageApproximation(Sketch s, Mode m, PImage img, int brightnessThreshold, int weighting, float maxHeight) {
         this.s = s;
+        this.mode = m;
         this.img = img;
         this.imageBounds = new Envelope(0, img.width, 0, img.height);
         this.maxHeight = maxHeight;
@@ -66,8 +65,8 @@ public class VoronoiImageApproximation implements Model3D {
         if(weighting > 0) {
             for(int i = 0; i < img.width; i++) {
                 for(int j = 0; j < img.height; j++) {
-                    float b = s.brightness(img.get(i, j));
-                    int times = round(map(b, 0, 250, weighting, 1));
+                    float density = mode.density(s, img, i, j);
+                    int times = round(map(density, 0, 1, weighting, 1));
                     Point2D p = new Point2D(i, j);
                     for(int k = 0; k < times; k++) {
                         available.add(p);
@@ -253,7 +252,7 @@ public class VoronoiImageApproximation implements Model3D {
         @Override
         public Point2D call() throws Exception {
             Envelope e = poly.getEnvelopeInternal();
-            if(imageBounds.contains(e)) {
+            if(imageBounds.contains(poly.getCentroid().getCoordinate())) {
                 float sumx = 0f;
                 float sumy = 0f;
                 int count = 0;
@@ -271,5 +270,44 @@ public class VoronoiImageApproximation implements Model3D {
             }
             return null;
         }
+    }
+
+    public enum Mode {
+        whiteOnBlack {
+            @Override
+            public float density(Sketch s, PImage img, int x, int y) {
+                return map(s.brightness(img.get(x, y)), 0, 255, 1, 0);
+            }
+
+            @Override
+            public int getBackground() {
+                return Color.BLACK.getRGB();
+            }
+
+            @Override
+            public int getForeground() {
+                return Color.WHITE.getRGB();
+            }
+        },
+        blackOnWhite {
+            @Override
+            public float density(Sketch s, PImage img, int x, int y) {
+                return map(s.brightness(img.get(x, y)), 0, 255, 0, 1);
+            }
+
+            @Override
+            public int getBackground() {
+                return Color.WHITE.getRGB();
+            }
+
+            @Override
+            public int getForeground() {
+                return Color.BLACK.getRGB();
+            }
+        };
+
+        public abstract float density(Sketch s, PImage img, int x, int y);
+        public abstract int getBackground();
+        public abstract int getForeground();
     }
 }
