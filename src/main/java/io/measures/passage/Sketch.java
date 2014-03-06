@@ -327,6 +327,17 @@ public class Sketch extends PApplet {
         }
     }
 
+    public void fit(PImage img) {
+        if((img.width > width) || (img.height > height)) {
+            if(((float) img.width / (float)img.height) > ((float) width / (float) height)) {
+                img.resize(width, 0);
+            }
+            else {
+                img.resize(0, height);
+            }
+        }
+    }
+
     @Override
     public File dataFile(String where) {
         File why = new File(where);
