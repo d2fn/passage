@@ -35,8 +35,7 @@ public class StippleLine {
         return density;
     }
 
-    public void writeTo(OutputStream os) throws IOException {
-        DataOutputStream dos = new DataOutputStream(os);
+    public void writeTo(DataOutputStream dos) throws IOException {
         dos.writeFloat(a.x());
         dos.writeFloat(a.y());
         dos.writeFloat(b.x());
