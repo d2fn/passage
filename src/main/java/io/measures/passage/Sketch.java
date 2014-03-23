@@ -238,7 +238,7 @@ public class Sketch extends PApplet {
     }
 
     public void snapshotCode() {
-        snapshotCode(now());
+        snapshotCode(startedAt);
     }
 
     public void snapshotCode(long time) {
