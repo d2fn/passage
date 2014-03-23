@@ -1,7 +1,16 @@
 package io.measures.passage.voronoi;
 
+import java.io.ByteArrayOutputStream;
+
 /**
- * Created by d on 3/19/14.
+ * StippleOutputStream
+ * @author Dietrich Featherston
  */
-public class StippleOutputStream {
+public class StippleOutputStream extends ByteArrayOutputStream {
+
+    private final ByteArrayOutputStream os;
+
+    public StippleOutputStream(ByteArrayOutputStream os) {
+        this.os = os;
+    }
 }
