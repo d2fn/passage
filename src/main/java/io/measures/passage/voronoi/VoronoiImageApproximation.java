@@ -1,5 +1,6 @@
 package io.measures.passage.voronoi;
 
+import com.google.common.base.Joiner;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import com.vividsolutions.jts.geom.Coordinate;
@@ -20,6 +21,11 @@ import quickhull3d.QuickHull3D;
 import static processing.core.PApplet.*;
 
 import java.awt.*;
+import java.io.DataOutputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.text.DecimalFormat;
 import java.util.Collections;
 import java.util.LinkedList;
@@ -31,6 +37,7 @@ import java.util.concurrent.Future;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
+import java.util.zip.GZIPOutputStream;
 
 /**
  * VoronoiImageApproximation
@@ -51,7 +58,7 @@ public class VoronoiImageApproximation implements Model3D {
     private Envelope imageBounds;
     private final ExecutorService threadpool;
 
-    public VoronoiImageApproximation(Sketch s, Mode m, PImage img, int brightnessThreshold, int weighting, float maxHeight) {
+    public VoronoiImageApproximation(Sketch s, Mode m, PImage img, int weighting, float maxHeight) {
         this.s = s;
         this.mode = m;
         this.img = img;
@@ -154,7 +161,7 @@ public class VoronoiImageApproximation implements Model3D {
                 }
                 Polygon poly = gf.createPolygon(coords);
                 List<Future<Point2D>> flist = Lists.newArrayList();
-                flist.add(threadpool.submit(new CentroidCallable(poly, img)));
+                flist.add(threadpool.submit(new CentroidCallable(poly)));
                 for(Future<Point2D> f : flist) {
                     try {
                         Point2D point = f.get();
@@ -233,19 +240,81 @@ public class VoronoiImageApproximation implements Model3D {
         return img.width;
     }
 
-    public int getHeight() {
-        return img.height;
+    public int getHeight() { return img.height; }
+
+    public synchronized void save(String path) {
+        DataOutputStream dos = null;
+        try {
+            dos = new DataOutputStream(
+                    new GZIPOutputStream(
+                            new FileOutputStream(path)));
+            // version
+            dos.writeInt(1);
+            for(Point2D p : getWeightedCentroids()) {
+                if(outOfBounds(p)) continue;
+                Point2D np = norm(p);
+                float strength = density(round(p.x()), round(p.y()));
+                dos.write(0);
+                new StipplePoint(np, strength).writeTo(dos);
+//                pw.println(j.join(np.x(), np.y(), strength));
+            }
+            for(MPolygon region : regions) {
+                int size = region.count();
+                for(int i = 0; i < size; i++) {
+                    int i1 = i%size;
+                    int i2 = (i+1)%size;
+                    float[] p1 = region.getCoords()[i1];
+                    Point2D a = norm(p1[0], p1[1]);
+                    float[] p2 = region.getCoords()[i2];
+                    Point2D b = norm(p2[0], p2[1]);
+                    if(outOfBounds(p1[0], p1[1]) || outOfBounds(p2[0], p2[1])) continue;
+                    float centerX = (p1[0] + p2[0])/2;
+                    float centerY = (p1[1] + p2[1])/2;
+                    float density = density(round(centerX), round(centerY));
+                    dos.write(1);
+                    new StippleLine(a, b, density).writeTo(dos);
+//                    pw.println(j.join(a.x(), a.y(), b.x(), b.y(), density));
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace(System.err);
+        }
+        finally {
+            if(dos != null) {
+                try {
+                    dos.flush();
+                    dos.close();
+                }
+                catch(Exception ignored) {}
+            }
+        }
+    }
+
+    private boolean outOfBounds(Point2D p) {
+        return outOfBounds(p.x(), p.y());
+    }
+    private boolean outOfBounds(float x, float y) {
+        return x > img.width  || x < 0 || y > img.height || y < 0;
+    }
+
+    private Point2D norm(Point2D p) {
+        return norm(p.x(), p.y());
+    }
+
+    private Point2D norm(float x, float y) {
+        float scale = max(img.width, img.height);
+        return new Point2D(
+                (x - img.width /2) / scale,
+                (y - img.height/2) / scale);
     }
 
     private class CentroidCallable implements Callable<Point2D> {
 
         private final Polygon poly;
-        private final PImage img;
         private final GeometryFactory gf;
 
-        private CentroidCallable(Polygon p, PImage img) {
+        private CentroidCallable(Polygon p) {
             this.poly = p;
-            this.img = img;
             this.gf = new GeometryFactory();
         }
 
