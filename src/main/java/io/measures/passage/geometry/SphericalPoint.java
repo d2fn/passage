@@ -1,5 +1,7 @@
 package io.measures.passage.geometry;
 
+import com.google.common.base.Objects;
+
 import static io.measures.passage.Sketch.*;
 
 public class SphericalPoint implements Projectable3D {
@@ -71,6 +73,18 @@ public class SphericalPoint implements Projectable3D {
         }
         float theta = acos(z/r);
         return new SphericalPoint(r, phi, theta);
+    }
+
+    public String toString() {
+        return toStringXY();
+    }
+
+    public String toStringXY() {
+        return Objects.toStringHelper(getClass()).add("x", x()).add("y", y()).add("z", z()).toString();
+    }
+
+    public String toStringR() {
+        return Objects.toStringHelper(getClass()).add("r", r).add("phi", phi).add("theta", theta).toString();
     }
 }
 
