@@ -30,11 +30,14 @@ public class JoonsSketch extends Sketch {
     @Override
     public void beforeFrame() {
         super.beforeFrame();
+        jr.beginRecord();
     }
 
     @Override
     public void afterFrame() {
         super.afterFrame();
+        jr.endRecord();
+        jr.displayRendered(true);
         if(triggerRender && !jr.isRendering()) {
             triggerRender = false;
             waitingForRender = true;
