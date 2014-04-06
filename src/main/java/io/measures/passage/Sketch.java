@@ -200,6 +200,10 @@ public class Sketch extends PApplet {
         translate(0, 0, p.r());
     }
 
+    public static float dist(Projectable2D p) {
+        return dist(p.x(), p.y(), 0, 0);
+    }
+
     public static float dist(Projectable2D a, Projectable2D b) {
         return dist(a.x(), a.y(), b.x(), b.y());
     }
