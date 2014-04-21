@@ -1,6 +1,7 @@
 package io.measures.passage.voronoi;
 
 import io.measures.passage.geometry.Point2D;
+import io.measures.passage.geometry.Projectable2D;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -33,6 +34,10 @@ public class StippleLine {
 
     public float getDensity() {
         return density;
+    }
+
+    public Projectable2D getMidpoint() {
+        return a.mid(b);
     }
 
     public void writeTo(DataOutputStream dos) throws IOException {
