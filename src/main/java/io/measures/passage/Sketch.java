@@ -48,7 +48,7 @@ public class Sketch extends PApplet {
     protected long pdfTime = 0L;
 
     private boolean saveAnimation = false;
-    private int numAnimationFrames = 100;
+    private int numAnimationFrames = -1; // save an unbounded number of frames
 
     public Sketch() {
 
@@ -121,7 +121,7 @@ public class Sketch extends PApplet {
         }
         if(saveAnimation) {
             saveFrame(getSnapshotPath("frames-" + startedAt + "/frame-#######.jpg"));
-            if(frameCount >= numAnimationFrames) {
+            if(numAnimationFrames > 0 && frameCount >= numAnimationFrames) {
                 exit();
             }
         }
