@@ -1,6 +1,8 @@
 package io.measures.passage;
 
 import com.google.common.base.Joiner;
+import io.measures.passage.color.ImageBackedSpectrum;
+import io.measures.passage.color.Spectrum;
 import io.measures.passage.geometry.Model3D;
 import io.measures.passage.geometry.Point2D;
 import io.measures.passage.geometry.Projectable2D;
@@ -398,5 +400,9 @@ public class Sketch extends PApplet {
             */
             paperGraphics = g;
         }
+    }
+
+    public Spectrum loadSpectrum(String path) {
+        return new ImageBackedSpectrum(loadImage(path));
     }
 }
