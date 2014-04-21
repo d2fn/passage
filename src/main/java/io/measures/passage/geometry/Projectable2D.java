@@ -11,4 +11,5 @@ public interface Projectable2D {
     public Projectable2D sub(Projectable2D b);
     public Projectable2D mid(Projectable2D b);
     public Projectable2D scale(float amt);
+    public boolean within(Rect2D bounds);
 }
