@@ -30,22 +30,23 @@ public class Point3D implements Projectable3D {
     }
 
     @Override
+    public Projectable3D add(Projectable3D p) {
+        return new Point3D(x() + p.x(), y() + p.y(), z() + p.z());
+    }
+
     public Projectable2D add(Projectable2D b) {
         return new Point2D(x() + b.x(), y() + b.y());
     }
 
-    @Override
     public Projectable2D sub(Projectable2D b) {
         return new Point2D(x() - b.x(), y() - b.y());
     }
 
-    @Override
     public Projectable2D mid(Projectable2D b) {
         return new Point2D((x() + b.x())/2, (y() + b.y())/2);
     }
 
-    @Override
     public Projectable2D scale(float amt) {
-        return new Point3D(x * amt, y * amt, z * amt);
+        return new Point2D(x * amt, y * amt);
     }
 }

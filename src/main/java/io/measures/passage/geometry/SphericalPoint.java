@@ -43,23 +43,24 @@ public class SphericalPoint implements Projectable3D {
     public float z() { return r * cos(theta); }
 
     @Override
+    public Projectable3D add(Projectable3D p) {
+        return new Point3D(x() + p.x(), y() + p.y(), z() + p.z());
+    }
+
     public Projectable2D add(Projectable2D b) {
         return new Point2D(x() + b.x(), y() + b.y());
     }
 
-    @Override
     public Projectable2D sub(Projectable2D b) {
         return new Point2D(x() - b.x(), y() - b.y());
     }
 
-    @Override
     public Projectable2D mid(Projectable2D b) {
         return new Point2D((x() + b.x())/2, (y() + b.y())/2);
     }
 
-    @Override
     public Projectable2D scale(float amt) {
-        return new SphericalPoint(r * amt, phi, theta);
+        return null;//new SphericalPoint(r * amt, phi, theta);
     }
 
     public static SphericalPoint fromXYZ(float x, float y, float z) {
