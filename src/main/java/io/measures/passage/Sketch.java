@@ -5,6 +5,7 @@ import io.measures.passage.geometry.Model3D;
 import io.measures.passage.geometry.Point2D;
 import io.measures.passage.geometry.Projectable2D;
 import io.measures.passage.geometry.Projectable3D;
+import io.measures.passage.geometry.Rect2D;
 import io.measures.passage.geometry.SphericalPoint;
 import io.measures.passage.geometry.Triangle3D;
 import processing.core.PApplet;
@@ -166,6 +167,10 @@ public class Sketch extends PApplet {
 
     public void line(Projectable2D a, Projectable2D b) {
         line(a.x(), a.y(), b.x(), b.y());
+    }
+
+    public Rect2D viewport() {
+        return new Rect2D(new Point2D(0, 0), width, height);
     }
 
     public void renderModel(Model3D model) {
