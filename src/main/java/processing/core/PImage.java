@@ -24,8 +24,10 @@
 
 package processing.core;
 
+import io.measures.passage.geometry.Point2D;
 import io.measures.passage.geometry.Projectable2D;
 import io.measures.passage.geometry.Projectable3D;
+import io.measures.passage.geometry.Rect2D;
 
 import java.awt.*;
 import java.awt.image.*;
@@ -3331,6 +3333,10 @@ public class PImage implements PConstants, Cloneable {
       success = false;
     }
     return success;
+  }
+
+  public boolean contains(Projectable2D p) {
+      return new Rect2D(0, 0, width, height).contains(p);
   }
 }
 
