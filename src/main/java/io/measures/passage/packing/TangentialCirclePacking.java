@@ -9,6 +9,7 @@ import io.measures.passage.geometry.Rect2D;
 
 import java.awt.*;
 import java.util.List;
+import java.util.Random;
 
 import static io.measures.passage.Sketch.*;
 
@@ -46,13 +47,16 @@ public class TangentialCirclePacking {
     }
 
     public void step() {
+        Random rand = new Random(System.currentTimeMillis());
         PackedCircle parent = circles.get(index);
-        for(float r = rFunction.apply(parent.getCenter()); r > minR; r -= dr) {
+        for(float r = rFunction.apply(parent.getCenter()); r >= minR; r -= dr) {
+            float t0 = rand.nextFloat()*TWO_PI;
+            float tf = t0 + TWO_PI;
             float dt = atan(dr/(r+parent.getTargetRadius()));
-            for(float t = 0; t < TWO_PI; t += dt) {
-                float r0 = parent.getTargetRadius();
-                Projectable2D p0 = parent.getTargetCenter().add(new PolarPoint(r0, t));
-                Projectable2D pf = p0.add(new PolarPoint(r, t));
+            for(float t = t0; t < tf; t += dt) {
+                float r0 = parent.getRadius();
+                Projectable2D p0 = parent.getCenter().add(new PolarPoint(r0, t));
+                Projectable2D pf = parent.getTargetCenter().add(new PolarPoint(parent.getTargetRadius() + r, t));
                 PackedCircle c = new PackedCircle(p0.x(), p0.y(), 0, c0);
                 c.tweenTo(pf);
                 c.targetColor(cf);
@@ -67,6 +71,11 @@ public class TangentialCirclePacking {
         if(index < circles.size()-1) {
             index++;
         }
-        update();
+    }
+
+    public void step(int n) {
+        for(int i = 0; i < n; i++) {
+            step();
+        }
     }
 }
