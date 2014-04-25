@@ -14,9 +14,7 @@ import java.awt.*;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Future;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
@@ -52,7 +50,6 @@ public class TangentialImageCirclePacking {
         println("upper bound on number of circles that exist = " + maxCircles);
         int cpus = Runtime.getRuntime().availableProcessors();
         ExecutorService es = new ThreadPoolExecutor(cpus, cpus, 10L, TimeUnit.SECONDS, queue);
-        List<Future> futures = Lists.newArrayList();
         for(int y = 0; y < img.height; y++) {
             for(int x = 0; x < img.width; x++) {
                 es.submit(new ErrorCalculator(x, y));
