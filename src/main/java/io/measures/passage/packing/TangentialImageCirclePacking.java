@@ -50,34 +50,14 @@ public class TangentialImageCirclePacking {
         index = 0;
         float maxCircles = ((r0 - minR)/dr)*img.width*img.height;
         println("upper bound on number of circles that exist = " + maxCircles);
-        long t0 = System.currentTimeMillis();
         int cpus = Runtime.getRuntime().availableProcessors();
         ExecutorService es = new ThreadPoolExecutor(cpus, cpus, 10L, TimeUnit.SECONDS, queue);
         List<Future> futures = Lists.newArrayList();
         for(int y = 0; y < img.height; y++) {
             for(int x = 0; x < img.width; x++) {
-                Future f = es.submit(new ErrorCalculator(x, y));
-                futures.add(f);
+                es.submit(new ErrorCalculator(x, y));
             }
         }
-        /** don't join for now
-        int n = 0;
-        for(Future f : futures) {
-            try {
-                f.get();
-                n++;
-                if(n%500000 == 0) {
-                    println("500k chunk done");
-                }
-            } catch (InterruptedException e) {
-                Thread.currentThread().interrupt();
-            } catch (ExecutionException e) {
-                e.printStackTrace();
-            }
-        }
-        long dt = System.currentTimeMillis() - t0;
-        println("brute forced brightness errors in " + (dt/1000) + "s");
-         **/
     }
 
     public List<ImagePackedCircle> get() {
@@ -95,7 +75,7 @@ public class TangentialImageCirclePacking {
                 float r0 = parent.getRadius();
                 Projectable2D p0 = parent.getCenter().add(new PolarPoint(r0, t));
                 Projectable2D pf = parent.getTargetCenter().add(new PolarPoint(parent.getTargetRadius() + r, t));
-                String key = new CircleKey(pf.x(), pf.y(), r).key();
+                String key = circleKey(pf.x(), pf.y(), r);
                 if(candidateCircles.containsKey(key)) {
                     ImagePackedCircle c = new ImagePackedCircle(p0.x(), p0.y(), 0, c0);
                     c.tweenTo(pf);
@@ -107,18 +87,6 @@ public class TangentialImageCirclePacking {
                         }
                     }
                 }
-//                ImagePackedCircle c = new ImagePackedCircle(p0.x(), p0.y(), 0, c0);
-//                c.tweenTo(pf);
-//                c.targetRadius(r);
-//                if(img.contains(pf)) {
-//                    if(!c.collidesWith(circles)) {
-//                        float error = brightnessError(c);
-//                        if(error >= 0 && brightnessError(c) < errorThreshold) {
-//                            c.targetColor(new Color(getAverageColor(c)));
-//                            circles.add(c);
-//                        }
-//                    }
-//                }
             }
         }
         if(index < circles.size()-1) {
@@ -223,7 +191,7 @@ public class TangentialImageCirclePacking {
                 ImagePackedCircle c = new ImagePackedCircle(x, y, r, Color.BLACK);
                 error = brightnessError(c);
                 if(error < errorThreshold) {
-                    String key = new CircleKey(x, y, r).key();
+                    String key = circleKey(x, y, r);
                     candidateCircles.put(key, true);
                     n++;
                 }
@@ -239,17 +207,8 @@ public class TangentialImageCirclePacking {
         }
     }
 
-    private static class CircleKey {
-
-        private final String key;
-
-        public CircleKey(float x, float y, float r) {
-            key = Joiner.on(":").join(Lists.newArrayList(round(x), round(y), round(r)));
-        }
-
-        public String key() {
-            return this.key;
-        }
+    private static String circleKey(float x, float y, float r) {
+        return Joiner.on(":").join(Lists.newArrayList(round(x), round(y), round(r)));
     }
 
     public static class PointInfo {
