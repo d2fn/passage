@@ -405,4 +405,8 @@ public class Sketch extends PApplet {
     public Spectrum loadSpectrum(String path) {
         return new ImageBackedSpectrum(loadImage(path));
     }
+
+    public static float sinF(float t, float wavelength, float phase, float min, float max) {
+        return 0.5f*(1+sin(t/wavelength+phase))*(max-min) + min;
+    }
 }
