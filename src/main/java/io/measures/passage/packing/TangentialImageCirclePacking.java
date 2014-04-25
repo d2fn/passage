@@ -1,6 +1,8 @@
 package io.measures.passage.packing;
 
+import com.google.common.base.Joiner;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 import io.measures.passage.Sketch;
 import io.measures.passage.geometry.ImagePackedCircle;
 import io.measures.passage.geometry.Point2D;
@@ -10,7 +12,14 @@ import processing.core.PImage;
 
 import java.awt.*;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Future;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
 import static io.measures.passage.Sketch.*;
 
@@ -19,9 +28,13 @@ public class TangentialImageCirclePacking {
     private final Sketch s;
     private final PImage img;
     private final List<ImagePackedCircle> circles;
+    private final Map<String, Boolean> candidateCircles;
     private int index = 0;
     private float r0, dr, minR, errorThreshold;
     private Color c0;
+
+    private List<PointInfo> completedPoints = Lists.newCopyOnWriteArrayList();
+    private LinkedBlockingQueue<Runnable> queue = new LinkedBlockingQueue<>();
 
     public TangentialImageCirclePacking(Sketch s, PImage img, float r0, float dr, float minR, float errorThreshold, Color c0) {
         this.s = s;
@@ -31,9 +44,40 @@ public class TangentialImageCirclePacking {
         this.minR = minR;
         this.c0 = c0;
         this.errorThreshold = errorThreshold;
+        candidateCircles = Maps.newConcurrentMap();
         circles = Lists.newArrayList();
         circles.add(new ImagePackedCircle(img.width/2, img.height/2, minR, c0));
         index = 0;
+        float maxCircles = ((r0 - minR)/dr)*img.width*img.height;
+        println("upper bound on number of circles that exist = " + maxCircles);
+        long t0 = System.currentTimeMillis();
+        int cpus = Runtime.getRuntime().availableProcessors();
+        ExecutorService es = new ThreadPoolExecutor(cpus, cpus, 10L, TimeUnit.SECONDS, queue);
+        List<Future> futures = Lists.newArrayList();
+        for(int y = 0; y < img.height; y++) {
+            for(int x = 0; x < img.width; x++) {
+                Future f = es.submit(new ErrorCalculator(x, y));
+                futures.add(f);
+            }
+        }
+        /** don't join for now
+        int n = 0;
+        for(Future f : futures) {
+            try {
+                f.get();
+                n++;
+                if(n%500000 == 0) {
+                    println("500k chunk done");
+                }
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+            } catch (ExecutionException e) {
+                e.printStackTrace();
+            }
+        }
+        long dt = System.currentTimeMillis() - t0;
+        println("brute forced brightness errors in " + (dt/1000) + "s");
+         **/
     }
 
     public List<ImagePackedCircle> get() {
@@ -51,18 +95,30 @@ public class TangentialImageCirclePacking {
                 float r0 = parent.getRadius();
                 Projectable2D p0 = parent.getCenter().add(new PolarPoint(r0, t));
                 Projectable2D pf = parent.getTargetCenter().add(new PolarPoint(parent.getTargetRadius() + r, t));
-                ImagePackedCircle c = new ImagePackedCircle(p0.x(), p0.y(), 0, c0);
-                c.tweenTo(pf);
-                c.targetRadius(r);
-                if(img.contains(pf)) {
-                    if(!c.collidesWith(circles)) {
-                        float error = brightnessError(c);
-                        if(error >= 0 && brightnessError(c) < errorThreshold) {
+                String key = new CircleKey(pf.x(), pf.y(), r).key();
+                if(candidateCircles.containsKey(key)) {
+                    ImagePackedCircle c = new ImagePackedCircle(p0.x(), p0.y(), 0, c0);
+                    c.tweenTo(pf);
+                    c.targetRadius(r);
+                    if(img.contains(pf)) {
+                        if(!c.collidesWith(circles)) {
                             c.targetColor(new Color(getAverageColor(c)));
                             circles.add(c);
                         }
                     }
                 }
+//                ImagePackedCircle c = new ImagePackedCircle(p0.x(), p0.y(), 0, c0);
+//                c.tweenTo(pf);
+//                c.targetRadius(r);
+//                if(img.contains(pf)) {
+//                    if(!c.collidesWith(circles)) {
+//                        float error = brightnessError(c);
+//                        if(error >= 0 && brightnessError(c) < errorThreshold) {
+//                            c.targetColor(new Color(getAverageColor(c)));
+//                            circles.add(c);
+//                        }
+//                    }
+//                }
             }
         }
         if(index < circles.size()-1) {
@@ -140,4 +196,78 @@ public class TangentialImageCirclePacking {
         }
         return s.color(0);
     }
+
+    public List<PointInfo> completedPoints() {
+        return completedPoints;
+    }
+
+    public boolean isDone() {
+        return queue.size() == 0;
+    }
+
+    class ErrorCalculator implements Runnable {
+
+        private final float x, y;
+
+        private float error;
+
+        ErrorCalculator(float x, float y) {
+            this.x = x;
+            this.y = y;
+        }
+
+        @Override
+        public void run() {
+            int n = 0;
+            for(float r = minR; r <= r0; r += dr) {
+                ImagePackedCircle c = new ImagePackedCircle(x, y, r, Color.BLACK);
+                error = brightnessError(c);
+                if(error < errorThreshold) {
+                    String key = new CircleKey(x, y, r).key();
+                    candidateCircles.put(key, true);
+                    n++;
+                }
+                else {
+                    break;
+                }
+            }
+            completedPoints.add(new PointInfo(new Point2D(x, y), n));
+        }
+
+        public float getError() {
+            return error;
+        }
+    }
+
+    private static class CircleKey {
+
+        private final String key;
+
+        public CircleKey(float x, float y, float r) {
+            key = Joiner.on(":").join(Lists.newArrayList(round(x), round(y), round(r)));
+        }
+
+        public String key() {
+            return this.key;
+        }
+    }
+
+    public static class PointInfo {
+        private final Point2D point;
+        private final int count;
+
+        public PointInfo(Point2D point, int count) {
+            this.point = point;
+            this.count = count;
+        }
+
+        public Point2D getPoint() {
+            return point;
+        }
+
+        public int getCount() {
+            return count;
+        }
+    }
 }
+
