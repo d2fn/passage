@@ -22,7 +22,7 @@ import java.util.concurrent.Future;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import static io.measures.passage.Sketch.*;
 
@@ -37,18 +37,21 @@ public class ImageCircleIndex {
     private Map<String, Candidate> candidates;
 
     // map of positions to the number of circles on that point
-    private ConcurrentMap<String, List<String>> xyToKeyList;
+    private ConcurrentMap<String, AtomicInteger> xyToCount;
+
+    private final int errorThreshold;
 
     public static String pathFor(Sketch s, String imgName) {
         return s.getDataPath(imgName) + "-circle-index.csv";
     }
 
-    public ImageCircleIndex() {
+    public ImageCircleIndex(int errorThreshold) {
         this.candidates = Maps.newConcurrentMap();
-        this.xyToKeyList = Maps.newConcurrentMap();
+        this.xyToCount = Maps.newConcurrentMap();
+        this.errorThreshold = errorThreshold;
     }
 
-    public Future load(Sketch s, String imgName, PImage img, float minR, float maxR, int errorThreshold) {
+    public Future load(Sketch s, String imgName, PImage img, float minR, float maxR) {
         File f = new File(pathFor(s, imgName));
         Runnable loader;
         if(f.exists()) {
@@ -78,22 +81,19 @@ public class ImageCircleIndex {
 
     private void add(Candidate c) {
         candidates.put(c.key(), c);
-        String pkey = c.positionKey();
-        List<String> l = Lists.newCopyOnWriteArrayList();
-        xyToKeyList.putIfAbsent(pkey, l);
-        xyToKeyList.get(pkey).add(c.key());
+        if(c.getError() < errorThreshold) {
+            String pkey = c.positionKey();
+            xyToCount.putIfAbsent(pkey, new AtomicInteger(0));
+            xyToCount.get(pkey).incrementAndGet();
+        }
     }
 
-    public int getCount(int x, int y, int errorThreshold) {
-        int n = 0;
-        if(xyToKeyList.containsKey(positionKey(x, y))) {
-            for(String key : xyToKeyList.get(positionKey(x, y))) {
-                if(candidates.get(key).getError() < errorThreshold) {
-                    n++;
-                }
-            }
+    public int getCount(int x, int y) {
+        String pkey = positionKey(x, y);
+        if(xyToCount.containsKey(pkey)) {
+            return xyToCount.get(pkey).get();
         }
-        return n;
+        return 0;
     }
 
     public boolean check(float x, float y, float r, float errorThreshold) {
@@ -188,6 +188,8 @@ public class ImageCircleIndex {
             for(Candidate c : sortedCandidates) {
                 pw.println(c.toString());
             }
+            pw.flush();
+            pw.close();
         } catch (FileNotFoundException e) {
             println(e.getMessage());
             e.printStackTrace(System.err);
@@ -210,8 +212,9 @@ public class ImageCircleIndex {
 
         @Override
         public void run() {
+            Scanner scanner = null;
             try {
-                Scanner scanner = new Scanner(new File(pathFor(s, imgName)));
+                scanner = new Scanner(new File(pathFor(s, imgName)));
                 while(scanner.hasNextLine()) {
                     Candidate c = Candidate.parse(scanner.nextLine());
                     if(c != null) {
@@ -220,12 +223,19 @@ public class ImageCircleIndex {
                             break;
                         }
                         index.add(c);
+//                        Thread.sleep(5);
                     }
                 }
             }
             catch (FileNotFoundException e) {
                 println(e.getMessage());
                 e.printStackTrace(System.err);
+            }
+//            catch(InterruptedException e) {
+//                Thread.currentThread().interrupt();
+//            }
+            finally {
+                if(scanner != null) scanner.close();
             }
         }
     }
