@@ -37,8 +37,8 @@ public class TangentialImageCirclePacking {
         this.errorThreshold = errorThreshold;
         circles = Lists.newArrayList();
         circles.add(new ImagePackedCircle(img.width/2, img.height/2, minR, c0));
-        imageIndex = new ImageCircleIndex();
-        indexLoader = imageIndex.load(s, imgName, img, minR, maxR, errorThreshold);
+        imageIndex = new ImageCircleIndex(errorThreshold);
+        indexLoader = imageIndex.load(s, imgName, img, minR, maxR);
         index = 0;
     }
 
@@ -115,7 +115,7 @@ public class TangentialImageCirclePacking {
     }
 
     public int getCandidateCount(int x, int y) {
-        return imageIndex.getCount(x, y, round(errorThreshold));
+        return imageIndex.getCount(x, y);
     }
 
     public boolean isDone() {
