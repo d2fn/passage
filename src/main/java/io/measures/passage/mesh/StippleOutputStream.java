@@ -1,4 +1,4 @@
-package io.measures.passage.voronoi;
+package io.measures.passage.mesh;
 
 import java.io.ByteArrayOutputStream;
 
