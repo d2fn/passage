@@ -1,6 +1,5 @@
-package io.measures.passage.voronoi;
+package io.measures.passage.mesh;
 
-import com.google.common.base.Joiner;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import com.vividsolutions.jts.geom.Coordinate;
@@ -22,10 +21,8 @@ import static processing.core.PApplet.*;
 
 import java.awt.*;
 import java.io.DataOutputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.text.DecimalFormat;
 import java.util.Collections;
 import java.util.LinkedList;
@@ -349,6 +346,11 @@ public class VoronoiImageApproximation implements Model3D {
             }
 
             @Override
+            public float densityOf(float d) {
+                return 1f-d;
+            }
+
+            @Override
             public int getBackground() {
                 return Color.BLACK.getRGB();
             }
@@ -365,6 +367,11 @@ public class VoronoiImageApproximation implements Model3D {
             }
 
             @Override
+            public float densityOf(float d) {
+                return d;
+            }
+
+            @Override
             public int getBackground() {
                 return Color.WHITE.getRGB();
             }
@@ -376,6 +383,7 @@ public class VoronoiImageApproximation implements Model3D {
         };
 
         public abstract float density(Sketch s, PImage img, int x, int y);
+        public abstract float densityOf(float d);
         public abstract int getBackground();
         public abstract int getForeground();
     }

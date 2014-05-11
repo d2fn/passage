@@ -94,6 +94,11 @@ public class Sketch extends PApplet {
         numAnimationFrames = n;
     }
 
+    @Override
+    public void setup() {
+        initSize(P2D);
+    }
+
      @Override
     public final void draw() {
         beforeFrame();
@@ -408,5 +413,12 @@ public class Sketch extends PApplet {
 
     public static float sinF(float t, float wavelength, float phase, float min, float max) {
         return 0.5f*(1+sin(t/wavelength+phase))*(max-min) + min;
+    }
+
+    public static float bias(float x, float b) {
+        if(b < 0) {
+            return (1 - exp(b*x))/(1-exp(b));
+        }
+        return exp(b*x)/exp(b);
     }
 }
