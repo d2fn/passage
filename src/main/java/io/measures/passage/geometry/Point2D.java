@@ -26,4 +26,6 @@ public class Point2D extends AbstractProjectable2D {
     public String toString() {
         return Objects.toStringHelper(Point2D.class).add("x", x).add("y", y).toString();
     }
+
+    private static final Point2D ORIGIN = new Point2D(0, 0);
 }
