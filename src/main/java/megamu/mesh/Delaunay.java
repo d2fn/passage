@@ -1,13 +1,16 @@
 package megamu.mesh;
 
+import quickhull3d.Point3d;
 import quickhull3d.QuickHull3D;
 
 public class Delaunay {
 
-	float[][] edges;
-	LinkedArray mesh;
-	int[][] links;
-	int linkCount;
+	private final float[][] edges;
+	private final LinkedArray mesh;
+	private int[][] links;
+	private int linkCount;
+    private final int[][] faces;
+    private Point3d[] hullVertices;
 
 	public Delaunay( float[][] points ){
 
@@ -15,7 +18,9 @@ public class Delaunay {
 			edges = new float[0][4];
 			mesh = new LinkedArray(0);
 			links = new int[0][2];
-			linkCount = 0;
+            linkCount = 0;
+            faces = new int[0][3];
+            hullVertices = new Point3d[0];
 			return;
 		}
 
@@ -41,7 +46,8 @@ public class Delaunay {
 
 		// prepare quickhull
 		QuickHull3D quickHull = new QuickHull3D(qPoints);
-		int[][] faces = quickHull.getFaces(QuickHull3D.POINT_RELATIVE + QuickHull3D.CLOCKWISE);
+		faces = quickHull.getFaces(QuickHull3D.POINT_RELATIVE + QuickHull3D.CLOCKWISE);
+        hullVertices = quickHull.getVertices();
 
 		// turn faces into links
 		mesh = new LinkedArray(points.length+3);
@@ -73,12 +79,15 @@ public class Delaunay {
 			edges[i][2] = points[links[i][1]][0];
 			edges[i][3] = points[links[i][1]][1];
 		}
-
 	}
 
 	public float[][] getEdges(){
 		return edges;
 	}
+
+    public int edgeCount(){
+        return linkCount;
+    }
 
 	public int[][] getLinks(){
 		return links;
@@ -88,8 +97,11 @@ public class Delaunay {
 		return mesh.get(i).links;
 	}
 
-	public int edgeCount(){
-		return linkCount;
-	}
+    public int[][] getFaces() {
+        return faces;
+    }
 
+    public Point3d[] getHullVertices() {
+        return hullVertices;
+    }
 }

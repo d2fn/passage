@@ -24,7 +24,6 @@ import java.io.DataOutputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.DecimalFormat;
-import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
@@ -36,6 +35,8 @@ import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.zip.GZIPOutputStream;
 
+import static io.measures.passage.Sketch.bias;
+
 /**
  * VoronoiImageApproximation
  * @author Dietrich Featherston
@@ -45,7 +46,7 @@ public class VoronoiImageApproximation implements Model3D {
     private final Sketch s;
     private final Mode mode;
     private final PImage img;
-    private final LinkedList<Point2D> available;
+//    private final LinkedList<Point2D> available;
     private final LinkedList<Point2D> generatingPoints;
     private final Set<String> used;
     private final DecimalFormat df = new DecimalFormat("0.##");
@@ -55,39 +56,26 @@ public class VoronoiImageApproximation implements Model3D {
     private Envelope imageBounds;
     private final ExecutorService threadpool;
 
-    public VoronoiImageApproximation(Sketch s, Mode m, PImage img, int weighting, float maxHeight) {
+    private final float weighting;
+
+    /**
+     * @param s - Sketch
+     * @param m - black/white mode
+     * @param img - the image
+     * @param weighting - positive for more points in high density areas, negative for more points in low density areas
+     * @param maxHeight - max z height (deprecated i think)
+     */
+    public VoronoiImageApproximation(Sketch s, Mode m, PImage img, float weighting, float maxHeight) {
         this.s = s;
         this.mode = m;
         this.img = img;
+        this.weighting = weighting;
         this.imageBounds = new Envelope(0, img.width, 0, img.height);
         this.maxHeight = maxHeight;
         // pick appropriate pixels where a voronoi point could be added
         // giving weight to brighter pixels
         generatingPoints = Lists.newLinkedList();
         used = Sets.newHashSet();
-        available = Lists.newLinkedList();
-        if(weighting > 0) {
-            for(int i = 0; i < img.width; i++) {
-                for(int j = 0; j < img.height; j++) {
-                    float density = mode.density(s, img, i, j);
-                    int times = round(map(density, 0, 1, weighting, 1));
-                    Point2D p = new Point2D(i, j);
-                    for(int k = 0; k < times; k++) {
-                        available.add(p);
-                    }
-                }
-            }
-        }
-        else {
-            for(int i = 0; i < img.width; i++) {
-                for(int j = 0; j < img.height; j++) {
-                    available.add(new Point2D(i, j));
-                }
-            }
-        }
-
-        // shuffle available points
-        Collections.shuffle(available);
 
         int cpus = Runtime.getRuntime().availableProcessors();
         threadpool = new ThreadPoolExecutor(cpus, cpus, 10, TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>(100000));
@@ -97,21 +85,27 @@ public class VoronoiImageApproximation implements Model3D {
      * @param n - number of steps to evolve
      */
     public void evolve(int n) {
-        for(int i = 0; i < n; i++) {
-            generatingPoints.add(pop());
+        int added = 0;
+        while(added < n) {
+            float x = s.random(img.width);
+            float y = s.random(img.height);
+            // use a bias function
+            float rho = mode.density(s, img, round(x), round(y));
+            float b = bias(rho, weighting);
+            if(weighting > 0) {
+                if(s.random(1f) < b) {
+                    generatingPoints.add(new Point2D(x, y));
+                    added++;
+                }
+            }
+            else {
+                if(s.random(1f) > b) {
+                    generatingPoints.add(new Point2D(x, y));
+                    added++;
+                }
+            }
         }
         update();
-    }
-
-    private Point2D pop() {
-        Point2D p;
-        String key;
-        do {
-            p = available.poll();
-            key = df.format(p.x()) + ":" + df.format(p.y());
-        } while(used.contains(key));
-        used.add(key);
-        return p;
     }
 
     private void update() {
@@ -165,7 +159,8 @@ public class VoronoiImageApproximation implements Model3D {
                         if(point != null) {
                             out.add(point);
                         }
-                    } catch(Exception e) {
+                    }
+                    catch(Exception e) {
                         println(e.getMessage());
                         e.printStackTrace(System.err);
                     }
@@ -250,7 +245,7 @@ public class VoronoiImageApproximation implements Model3D {
             for(Point2D p : getWeightedCentroids()) {
                 if(outOfBounds(p)) continue;
                 Point2D np = norm(p);
-                float strength = density(round(p.x()), round(p.y()));
+                float strength = mode.density(this.s, img, round(p.x()), round(p.y()));
                 dos.write(0);
                 new StipplePoint(np, strength).writeTo(dos);
 //                pw.println(j.join(np.x(), np.y(), strength));
@@ -267,7 +262,7 @@ public class VoronoiImageApproximation implements Model3D {
                     if(outOfBounds(p1[0], p1[1]) || outOfBounds(p2[0], p2[1])) continue;
                     float centerX = (p1[0] + p2[0])/2;
                     float centerY = (p1[1] + p2[1])/2;
-                    float density = density(round(centerX), round(centerY));
+                    float density = mode.density(this.s, img, round(centerX), round(centerY));
                     dos.write(1);
                     new StippleLine(a, b, density).writeTo(dos);
 //                    pw.println(j.join(a.x(), a.y(), b.x(), b.y(), density));
