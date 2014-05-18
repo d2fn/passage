@@ -421,4 +421,8 @@ public class Sketch extends PApplet {
         }
         return exp(b*x)/exp(b);
     }
+
+    public static float sgn(float n) {
+        return n > 0 ? 1 : -1;
+    }
 }
