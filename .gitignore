@@ -1,6 +1,7 @@
 *.class
 rendered.png
 captured.png
+src/main/java/ddf/minim/.metadata
 
 # Package Files #
 .idea/
