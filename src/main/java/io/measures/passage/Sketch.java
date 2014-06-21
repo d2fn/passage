@@ -40,10 +40,12 @@ public class Sketch extends PApplet {
     public final int pink = color(255, 46, 112);
     public final int teal = color(85, 195, 194);
     public final int nak = color(0, 170, 255);
+    public final int purple = color(79, 91, 206);
     public final int blue = color(49, 130, 189);
     public final int darkblue = color(49, 130, 189);
     public final int lightblue = color(222, 235, 247);
     public final int redorange = color(240, 59, 32);
+    public final int sepia = color(221, 219, 205);
 
     private PGraphics paperGraphics;
 
