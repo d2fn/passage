@@ -178,6 +178,10 @@ public class Sketch extends PApplet {
         line(a.x(), a.y(), a.z(), b.x(), b.y(), b.z());
     }
 
+    public void line(Line2D line) {
+        line(line.a(), line.b());
+    }
+
     public void line(Projectable2D a, Projectable2D b) {
         line(a.x(), a.y(), b.x(), b.y());
     }
