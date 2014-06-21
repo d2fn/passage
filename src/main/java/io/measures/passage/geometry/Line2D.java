@@ -31,6 +31,10 @@ public class Line2D {
         return dist(a, b);
     }
 
+    public Projectable2D mid() {
+        return a.mid(b);
+    }
+
     public Line2D scale(float amt) {
         return new Line2D(a.scale(amt), b.scale(amt));
     }
