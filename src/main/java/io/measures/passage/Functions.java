@@ -18,8 +18,8 @@ public class Functions {
         dst.add(new Triangle3D(d, c, b));
     }
 
-    public static final float log10(float x) {
-        return (log(x) / log(10));
+    public static final float log10(float n) {
+        return (log(n) / log(10));
     }
 
     public static final float sunAngle(long utc) {
