@@ -26,6 +26,7 @@ package processing.core;
 
 import io.measures.passage.geometry.Projectable2D;
 import io.measures.passage.geometry.Projectable3D;
+import io.measures.passage.geometry.Rect2D;
 import processing.data.*;
 import processing.event.*;
 import processing.event.Event;
@@ -11916,6 +11917,10 @@ public class PApplet extends Applet
   public void rectMode(int mode) {
     if (recorder != null) recorder.rectMode(mode);
     g.rectMode(mode);
+  }
+
+  public void rect(Rect2D r) {
+    rect(r.getUpperLeft().x(), r.getUpperLeft().y(), r.getWidth(), r.getHeight());
   }
 
 

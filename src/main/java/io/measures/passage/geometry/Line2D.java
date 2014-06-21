@@ -7,6 +7,7 @@ import static io.measures.passage.Sketch.*;
  * @author Dietrich Featherston
  */
 public class Line2D {
+
     private final Projectable2D a;
     private final Projectable2D b;
 
@@ -31,7 +32,24 @@ public class Line2D {
         return dist(a, b);
     }
 
+    public Projectable2D mid() {
+        return a.mid(b);
+    }
+
     public Line2D scale(float amt) {
         return new Line2D(a.scale(amt), b.scale(amt));
+    }
+
+    public Projectable2D interpolate(float r) {
+        return
+            new Point2D(
+                map(r, 0, 1, a.x(), b.x()),
+                map(r, 0, 1, a.y(), b.y())
+            );
+
+    }
+
+    public Line2D reverse() {
+        return new Line2D(b, a);
     }
 }

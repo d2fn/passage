@@ -1,8 +1,10 @@
 package io.measures.passage;
 
 import com.google.common.base.Joiner;
+import com.google.common.collect.Lists;
 import io.measures.passage.color.ImageBackedSpectrum;
 import io.measures.passage.color.Spectrum;
+import io.measures.passage.geometry.Line2D;
 import io.measures.passage.geometry.Model3D;
 import io.measures.passage.geometry.Point2D;
 import io.measures.passage.geometry.Projectable2D;
@@ -20,6 +22,8 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * Sketch
@@ -40,10 +44,12 @@ public class Sketch extends PApplet {
     public final int pink = color(255, 46, 112);
     public final int teal = color(85, 195, 194);
     public final int nak = color(0, 170, 255);
+    public final int purple = color(79, 91, 206);
     public final int blue = color(49, 130, 189);
     public final int darkblue = color(49, 130, 189);
     public final int lightblue = color(222, 235, 247);
     public final int redorange = color(240, 59, 32);
+    public final int sepia = color(221, 219, 205);
 
     private PGraphics paperGraphics;
 
@@ -94,6 +100,10 @@ public class Sketch extends PApplet {
         numAnimationFrames = n;
     }
 
+    public int animationFrames() {
+        return numAnimationFrames;
+    }
+
     @Override
     public void setup() {
         initSize(P2D);
@@ -106,6 +116,7 @@ public class Sketch extends PApplet {
             renderFrame();
         } catch(Exception e) {
             println(e.getMessage());
+            e.printStackTrace(System.err);
         } finally {
             afterFrame();
         }
@@ -170,6 +181,10 @@ public class Sketch extends PApplet {
 
     public void line(Projectable3D a, Projectable3D b) {
         line(a.x(), a.y(), a.z(), b.x(), b.y(), b.z());
+    }
+
+    public void line(Line2D line) {
+        line(line.a(), line.b());
     }
 
     public void line(Projectable2D a, Projectable2D b) {
@@ -424,5 +439,18 @@ public class Sketch extends PApplet {
 
     public static float sgn(float n) {
         return n > 0 ? 1 : -1;
+    }
+
+    public PImage[] loadImageSequence(String folderName) {
+        String dir = dataPath(folderName);
+        String[] names = new File(dir).list();
+        Arrays.sort(names);
+        List<PImage> images = Lists.newArrayList();
+        for(String name : names) {
+            if(!name.startsWith(".")) {
+                images.add(loadImage(pathJoiner.join(folderName, name)));
+            }
+        }
+        return images.toArray(new PImage[images.size()]);
     }
 }

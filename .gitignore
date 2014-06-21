@@ -1,4 +1,6 @@
 *.class
+rendered.png
+captured.png
 
 # Package Files #
 .idea/
