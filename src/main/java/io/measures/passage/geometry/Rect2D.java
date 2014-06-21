@@ -29,6 +29,9 @@ public class Rect2D {
         return upperLeft.add(new Point2D(width, height));
     }
 
+    public float x() { return upperLeft.x(); }
+    public float y() { return upperLeft.y(); }
+
     public float getWidth() {
         return width;
     }
