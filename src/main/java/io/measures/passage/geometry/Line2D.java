@@ -38,4 +38,8 @@ public class Line2D {
     public Line2D scale(float amt) {
         return new Line2D(a.scale(amt), b.scale(amt));
     }
+
+    public Line2D reverse() {
+        return new Line2D(b, a);
+    }
 }
