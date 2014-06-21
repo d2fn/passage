@@ -1,8 +1,10 @@
 package io.measures.passage;
 
 import com.google.common.base.Joiner;
+import com.google.common.collect.Lists;
 import io.measures.passage.color.ImageBackedSpectrum;
 import io.measures.passage.color.Spectrum;
+import io.measures.passage.geometry.Line2D;
 import io.measures.passage.geometry.Model3D;
 import io.measures.passage.geometry.Point2D;
 import io.measures.passage.geometry.Projectable2D;
@@ -20,6 +22,8 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * Sketch
@@ -112,6 +116,7 @@ public class Sketch extends PApplet {
             renderFrame();
         } catch(Exception e) {
             println(e.getMessage());
+            e.printStackTrace(System.err);
         } finally {
             afterFrame();
         }
