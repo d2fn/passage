@@ -435,4 +435,17 @@ public class Sketch extends PApplet {
     public static float sgn(float n) {
         return n > 0 ? 1 : -1;
     }
+
+    public PImage[] loadImageSequence(String folderName) {
+        String dir = dataPath(folderName);
+        String[] names = new File(dir).list();
+        Arrays.sort(names);
+        List<PImage> images = Lists.newArrayList();
+        for(String name : names) {
+            if(!name.startsWith(".")) {
+                images.add(loadImage(pathJoiner.join(folderName, name)));
+            }
+        }
+        return images.toArray(new PImage[images.size()]);
+    }
 }
