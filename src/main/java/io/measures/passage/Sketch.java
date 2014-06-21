@@ -94,6 +94,10 @@ public class Sketch extends PApplet {
         numAnimationFrames = n;
     }
 
+    public int animationFrames() {
+        return numAnimationFrames;
+    }
+
     @Override
     public void setup() {
         initSize(P2D);
