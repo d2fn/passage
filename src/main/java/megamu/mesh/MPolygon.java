@@ -1,6 +1,6 @@
 package megamu.mesh;
 
-import io.measures.passage.geometry.Point2D;
+import com.d2fn.passage.geometry.Point2D;
 import processing.core.*;
 
 public class MPolygon {

@@ -24,10 +24,8 @@
 
 package processing.core;
 
-import io.measures.passage.geometry.Point2D;
-import io.measures.passage.geometry.Projectable2D;
-import io.measures.passage.geometry.Projectable3D;
-import io.measures.passage.geometry.Rect2D;
+import com.d2fn.passage.geometry.Projectable2D;
+import com.d2fn.passage.geometry.Rect2D;
 
 import java.awt.*;
 import java.awt.image.*;
