@@ -24,9 +24,9 @@
 
 package processing.core;
 
-import io.measures.passage.geometry.Projectable2D;
-import io.measures.passage.geometry.Projectable3D;
-import io.measures.passage.geometry.Rect2D;
+import com.d2fn.passage.geometry.Projectable2D;
+import com.d2fn.passage.geometry.Projectable3D;
+import com.d2fn.passage.geometry.Rect2D;
 import processing.data.*;
 import processing.event.*;
 import processing.event.Event;

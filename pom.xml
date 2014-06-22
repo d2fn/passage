@@ -2,7 +2,7 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>io.measures</groupId>
+    <groupId>com.d2fn</groupId>
     <artifactId>passage</artifactId>
     <version>0.1-SNAPSHOT</version>
 
@@ -148,7 +148,7 @@
                                         implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer"/>
                                 <transformer
                                         implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
-                                    <mainClass>io.measures.passage.SketchRunner</mainClass>
+                                    <mainClass>com.d2fn.passage.SketchRunner</mainClass>
                                 </transformer>
                             </transformers>
                         </configuration>
