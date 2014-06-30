@@ -10389,6 +10389,9 @@ public class PApplet extends Applet
     main(mainClass, null);
   }
 
+  public void printenv() {
+  }
+
 
   /**
    * Convenience method so that PApplet.main("YourSketch", args) launches a
@@ -10875,6 +10878,8 @@ public class PApplet extends Applet
         }
       }
     }
+
+    applet.printenv();
 
     // Disabling for 0185, because it causes an assertion failure on OS X
     // http://code.google.com/p/processing/issues/detail?id=258
