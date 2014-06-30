@@ -391,6 +391,7 @@ public class Sketch extends PApplet {
         return System.getenv(name);
     }
 
+    @Override
     public void printenv() {
         System.out.println("sketch name: " + this.getClass().getName());
         System.out.println("PASSAGE_HOME=" + homeDir);
