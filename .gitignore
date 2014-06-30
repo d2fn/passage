@@ -10,4 +10,5 @@ src/main/java/ddf/minim/.metadata
 *.iml
 target/
 .DS_Store
+*.swp
 
