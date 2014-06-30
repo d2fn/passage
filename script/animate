@@ -1,0 +1,11 @@
+#!/bin/sh
+
+mvn -B clean package
+cp passage-0.1-SNAPSHOT-natives-macosx-universal.jar target/
+
+min=$1
+max=$2
+
+for i in $(seq $min $max); do
+  RENDER_FRAME=$i java -cp target/passage-0.1-SNAPSHOT.jar com.d2fn.passage.Sketch PolySketch
+done
