@@ -49,4 +49,6 @@ public class Point3D implements Projectable3D {
     public Projectable2D scale(float amt) {
         return new Point2D(x * amt, y * amt);
     }
+
+    public static final Point3D origin = new Point3D(0, 0, 0);
 }
