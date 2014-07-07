@@ -24,4 +24,6 @@ public class PolarPoint extends AbstractProjectable2D {
     public float y() {
         return r * sin(theta);
     }
+
+    private static final PolarPoint origin = new PolarPoint(0, 0);
 }

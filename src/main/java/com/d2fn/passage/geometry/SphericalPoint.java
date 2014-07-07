@@ -87,5 +87,7 @@ public class SphericalPoint implements Projectable3D {
     public String toStringR() {
         return Objects.toStringHelper(getClass()).add("r", r).add("phi", phi).add("theta", theta).toString();
     }
+
+    private static final SphericalPoint origin = new SphericalPoint(0, 0, 0);
 }
 
