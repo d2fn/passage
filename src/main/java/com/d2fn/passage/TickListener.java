@@ -1,7 +1,5 @@
 package com.d2fn.passage;
 
-/**
- * Created by d on 8/17/14.
- */
-public class TickListener {
+public interface TickListener {
+    public void tick();
 }
