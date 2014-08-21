@@ -59,6 +59,8 @@ public class Sketch extends PApplet {
     private boolean saveAnimation = false;
     private int numAnimationFrames = -1; // save an unbounded number of frames
 
+    private final List<TickListener> tickListeners;
+
     public Sketch() {
 
         String homeDir = getParameter("PASSAGE_HOME");
@@ -74,6 +76,8 @@ public class Sketch extends PApplet {
         new File(getSnapshotDir()).mkdirs();
         // ensure the data dir exists
         new File(getDataDir()).mkdirs();
+
+        tickListeners = Lists.newArrayList();
     }
 
     public void initSize(String type) {
@@ -134,6 +138,9 @@ public class Sketch extends PApplet {
     }
 
     public void afterFrame() {
+        for(TickListener tl : tickListeners) {
+            tl.tick();
+        }
         if(recordPdf) {
             endRaw();
             recordPdf = false;
@@ -144,6 +151,14 @@ public class Sketch extends PApplet {
                 exit();
             }
         }
+    }
+
+    public void addTicker(TickListener tl) {
+        tickListeners.add(tl);
+    }
+
+    public void removeTicker(TickListener tl) {
+        tickListeners.remove(tl);
     }
 
     public int darker(int c) {
