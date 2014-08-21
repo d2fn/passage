@@ -2,6 +2,9 @@ package com.d2fn.passage.geometry;
 
 import com.google.common.base.Objects;
 
+import static processing.core.PApplet.cos;
+import static processing.core.PApplet.sin;
+
 /**
  * Point2D
  * @author Dietrich Featherston
