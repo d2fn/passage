@@ -1,5 +1,8 @@
 package com.d2fn.passage.geometry;
 
+import static processing.core.PApplet.cos;
+import static processing.core.PApplet.sin;
+
 /**
  * AbstractProjectable2D
  * @author Dietrich Featherston
@@ -27,6 +30,20 @@ public abstract class AbstractProjectable2D implements Projectable2D {
     public Projectable2D scale(float amt) {
         return new Point2D(amt * x(), amt * y());
     }
+
+    @Override
+    public Projectable2D rotate(float theta) {
+        final float co = cos(theta);
+        final float si = sin(theta);
+        final float x = x();
+        final float y = y();
+        return
+            new Point2D(
+                co*x - si*y,
+                si*x + co*y
+            );
+    }
+
 
     @Override
     public boolean within(Rect2D bounds) {

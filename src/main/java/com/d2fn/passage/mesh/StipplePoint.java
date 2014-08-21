@@ -74,6 +74,11 @@ public class StipplePoint implements Projectable2D {
     }
 
     @Override
+    public Projectable2D rotate(float radians) {
+        return null;
+    }
+
+    @Override
     public boolean within(Rect2D bounds) {
         return p.within(bounds);
     }
