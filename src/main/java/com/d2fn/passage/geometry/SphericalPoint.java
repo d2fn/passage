@@ -42,9 +42,43 @@ public class SphericalPoint implements Projectable3D {
     public float y() { return r * sin(theta) * sin(phi); }
     public float z() { return r * cos(theta); }
 
+    private Point3D point3d() {
+        return new Point3D(x(), y(), z());
+    }
+
     @Override
     public Projectable3D add(Projectable3D p) {
         return new Point3D(x() + p.x(), y() + p.y(), z() + p.z());
+    }
+
+    @Override
+    public Projectable3D sub(Projectable3D p) {
+        return point3d().sub(p);
+    }
+
+    @Override
+    public Projectable3D rotateX(float theta) {
+        return point3d().rotateX(theta);
+    }
+
+    @Override
+    public Projectable3D rotateY(float theta) {
+        return point3d().rotateZ(theta);
+    }
+
+    @Override
+    public Projectable3D rotateZ(float theta) {
+        return point3d().rotateZ(theta);
+    }
+
+    @Override
+    public Projectable3D rotate(float xradians, float yradians, float zradians) {
+        return rotateX(xradians).rotateX(yradians).rotateZ(zradians);
+    }
+
+    @Override
+    public Projectable3D rotate(Projectable3D angleVec) {
+        return rotate(angleVec.x(), angleVec.y(), angleVec.z());
     }
 
     public Projectable2D add(Projectable2D b) {
@@ -59,8 +93,8 @@ public class SphericalPoint implements Projectable3D {
         return new Point2D((x() + b.x())/2, (y() + b.y())/2);
     }
 
-    public Projectable2D scale(float amt) {
-        return null;//new SphericalPoint(r * amt, phi, theta);
+    public Projectable3D scale(float amt) {
+        return new SphericalPoint(r * amt, phi, theta);
     }
 
     public static SphericalPoint fromXYZ(float x, float y, float z) {
