@@ -81,7 +81,12 @@ public class Sketch extends PApplet {
     }
 
     public void initSize(String type) {
-        size(getTargetWidth(), getTargetHeight(), type);
+        if(present) {
+            size(displayWidth, displayHeight, type);
+        }
+        else {
+            size(getTargetWidth(), getTargetHeight(), type);
+        }
     }
 
     public int getTargetWidth() {
