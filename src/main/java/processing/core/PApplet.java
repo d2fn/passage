@@ -270,6 +270,8 @@ public class PApplet extends Applet
   boolean useStrategy = false;
   Canvas canvas;
 
+  public boolean present = false;
+
 //  /**
 //   * Usually just 0, but with multiple displays, the X and Y coordinates of
 //   * the screen will depend on the current screen's position relative to
@@ -10578,6 +10580,8 @@ public class PApplet extends Applet
         throw new RuntimeException(e);
       }
     }
+
+    applet.present = present;
 
     // Set the trimmings around the image
     applet.setIconImage(frame);
