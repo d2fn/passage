@@ -2,9 +2,6 @@ package com.d2fn.passage.geometry;
 
 import com.google.common.base.Objects;
 
-import static processing.core.PApplet.cos;
-import static processing.core.PApplet.sin;
-
 /**
  * Point2D
  * @author Dietrich Featherston
@@ -30,5 +27,5 @@ public class Point2D extends AbstractProjectable2D {
         return Objects.toStringHelper(Point2D.class).add("x", x).add("y", y).toString();
     }
 
-    private static final Point2D origin = new Point2D(0, 0);
+    public static final Point2D origin = new Point2D(0, 0);
 }
