@@ -35,10 +35,11 @@ public class Integrator {
 
     public void set(float v) {
         value = v;
+        targeting = false;
     }
 
 
-    public void update() {
+    public Integrator update() {
         if (targeting) {
             force += attraction * (target - value);
         }
@@ -48,6 +49,8 @@ public class Integrator {
         value += vel;
 
         force = 0;
+
+        return this;
     }
 
 
