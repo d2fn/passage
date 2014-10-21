@@ -367,6 +367,21 @@ public class Sketch extends PApplet {
         return pathJoiner.join(getHomeDir(), name);
     }
 
+    public static void resizePreservingAspectRatio(PImage a, int wb, int hb) {
+        // aspect ratio of a
+        float ra = (float)a.width/(float)a.height;
+        float rb = (float)wb/(float)hb;
+        if(ra > rb) {
+            a.resize(wb, round(rb*hb/ra));
+        }
+        else if(ra < rb) {
+            a.resize(round(ra*wb/rb), hb);
+        }
+        else {
+            a.resize(wb, hb);
+        }
+    }
+
     public static void fit(PImage img, int maxWidth, int maxHeight) {
         // oblig image resizing to fit in our space
         float imgratio = (float)img.width / (float)img.height;
