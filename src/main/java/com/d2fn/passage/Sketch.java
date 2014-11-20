@@ -303,7 +303,7 @@ public class Sketch extends PApplet {
 
     public void snapshotFrame(long time) {
         println("taking raster snapshot");
-        saveFrame(getSnapshotPath("raster-" + time + ".jpg"));
+        saveFrame(getSnapshotPath("raster-" + time + ".tiff"));
     }
 
     // todo - compatibility
