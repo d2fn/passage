@@ -132,9 +132,14 @@ public class Sketch extends PApplet {
     }
 
     public void beforeFrame() {
+        update();
         if(recordPdf) {
             beginRaw(PDF, getSnapshotPath("vector-" + pdfTime + ".pdf"));
         }
+    }
+
+    public void update() {
+        ;
     }
 
     public void renderFrame() {
