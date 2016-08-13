@@ -1694,9 +1694,11 @@ public abstract class Controller<T> implements ControllerInterface<T>, CDrawable
 	 * @deprecated
 	 * @exclude
 	 */
-	@SuppressWarnings("unchecked") @Deprecated public T setDisplay(ControllerDisplay theDisplay) {
-		return setView(theDisplay);
-	}
+//	@SuppressWarnings("unchecked")
+//    @Deprecated
+//    public T setDisplay(ControllerDisplay theDisplay) {
+//		return setView(theDisplay);
+//	}
 
 	/**
 	 * @deprecated
